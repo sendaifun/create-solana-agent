@@ -1,0 +1,35 @@
+{
+  "name": "create-solana-agent",
+  "version": "1.0.0",
+  "description": "Get up and running fast with AI Agents on Solana",
+  "main": "index.js",
+  "scripts": {
+    "dev": "ts-node src/bin/index.ts",
+    "clean": "rm -rf dist",
+    "build": "npm run clean && tsc"
+  },
+  "bin": {
+    "create-solana-agent": "./dist/bin/index.cjs"
+  },
+  "keywords": [
+    "solana",
+    "ai",
+    "agents",
+    "solana agent kit"
+  ],
+  "author": "arihantbansal",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "eslint": "^9.17.0",
+    "prettier": "^3.4.2",
+    "typescript": "^5.7.2"
+  },
+  "dependencies": {
+    "@clack/prompts": "^0.9.0",
+    "commander": "^12.1.0",
+    "cross-spawn": "^7.0.6",
+    "ora": "^8.1.1",
+    "picocolors": "^1.1.1"
+  }
+}

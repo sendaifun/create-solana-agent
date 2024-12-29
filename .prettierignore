@@ -1,0 +1,10 @@
+# Add files here to ignore them from prettier formatting
+
+/dist
+/coverage
+tmp
+/.yarn
+pnpm-lock.yaml
+
+# Ignore generated schema files in packages
+/packages/*/src/generators/**/*-schema.d.ts
