@@ -6,11 +6,10 @@ import ora from "ora";
 import { fileURLToPath } from "url";
 import { optimizedCopy, toValidPackageName } from "./utils.js";
 
-const sourceDir = path.resolve(fileURLToPath(import.meta.url), "../../../templates/next");
+const sourceDir = path.resolve(fileURLToPath(import.meta.url), "../../templates/next");
 
 const renameFiles: Record<string, string | undefined> = {
   _gitignore: ".gitignore",
-  "_env.local": ".env.local",
 };
 
 const excludeDirs = ["node_modules", ".next"];
