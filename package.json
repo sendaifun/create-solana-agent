@@ -10,7 +10,7 @@
   },
   "type": "module",
   "bin": {
-    "create-solana-agent": "./dist/bin/index.cjs"
+    "create-solana-agent": "./dist/bin/index.js"
   },
   "keywords": [
     "solana",
