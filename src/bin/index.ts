@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import { log } from '@clack/prompts';
-import { main } from '../index';
+import { main } from '../index.js';
 
 main(process.argv)
   // Pretty log the error, then throw it
