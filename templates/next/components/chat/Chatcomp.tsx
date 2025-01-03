@@ -1,3 +1,6 @@
+// All the UI compnents - sidebar, chat area are defined here for the starter,
+// this can be split to components and can be more modularized
+
 "use client";
 
 import { Button } from "@/components/ui/button";
@@ -94,7 +97,7 @@ export default function Chat() {
   return (
     <div className="min-h-screen bg-white dark:bg-zinc-950 flex">
       {/* Mobile Header */}
-      <div className="md:hidden fixed top-0 left-0 right-0 h-16 rounded-lg border-b border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 z-20 flex items-center justify-between px-4">
+      <div className="md:hidden fixed top-0 left-0 right-0 h-16 rounded-xl border-b border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 z-20 flex items-center justify-between px-4">
         <div className="flex items-center gap-2">
           <Button variant="ghost" size="icon" onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
             <Menu size={24} />
@@ -137,8 +140,14 @@ export default function Chat() {
         </div>
 
         {/* Sidebar Content */}
+        <div className="flex items-center gap-2 p-4">
+          <h1 className="text-xl font-semibold text-zinc-900 dark:text-white">Agent Chat</h1>
+        </div>
         <div className="p-4">
-          <Button className="w-full justify-start gap-2 mb-4 bg-primary hover:bg-primary/80 text-black" variant="ghost">
+          <Button
+            className="w-full rounded-xl justify-start gap-2 mb-4 bg-primary hover:bg-primary/80 text-black"
+            variant="ghost"
+          >
             <Plus size={16} />
             New chat
           </Button>
@@ -155,7 +164,7 @@ export default function Chat() {
                   setSelectedConversation(item.id);
                   setIsMobileMenuOpen(false);
                 }}
-                className={`w-full text-left px-3 py-2 rounded-lg text-sm transition-colors
+                className={`w-full rounded-xl text-left px-3 py-2 text-sm transition-colors
                   ${
                     selectedConversation === item.id
                       ? "bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-white"
@@ -236,14 +245,10 @@ export default function Chat() {
                   <div
                     className={`
                     max-w-[85%] p-3 rounded-2xl
-                    ${
-                      m.role === "user"
-                        ? "bg-primary text-white"
-                        : "bg-zinc-100 dark:bg-zinc-800 text-zinc-900"
-                    }
+                    ${m.role === "user" ? "bg-primary text-black dark:text-zinc-800" : "bg-zinc-100 text-zinc-800 dark:bg-zinc-800 dark:text-zinc-100"}
                   `}
                   >
-                    <div className="text-sm">{m.content}</div>
+                    <div className="text-sm text-wrap whitespace-pre-wrap">{m.content}</div>
                   </div>
                 </div>
               ))
@@ -259,7 +264,6 @@ export default function Chat() {
           </div>
         </div>
 
-        {/* Input Area */}
         <div className="border-t border-zinc-200 dark:border-zinc-800 p-4">
           <div className="max-w-3xl mx-auto">
             <form onSubmit={handleSubmit} className="flex gap-2">
@@ -267,13 +271,13 @@ export default function Chat() {
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 placeholder="Ask your agent anything.."
-                className="flex-1 bg-zinc-100 dark:bg-zinc-800 border-0 focus-visible:ring-1 focus-visible:ring-primary"
+                className="flex-1 rounded-xl text-zinc-800 dark:text-zinc-100 bg-zinc-100 dark:bg-zinc-800 border-0 focus-visible:ring-1 focus-visible:ring-primary"
               />
               <Button
                 type="submit"
                 size="icon"
                 disabled={isLoading}
-                className="bg-primary hover:bg-primary/80 text-black"
+                className="bg-primary rounded-xl hover:bg-primary/80 text-black"
               >
                 <Send size={18} />
               </Button>
