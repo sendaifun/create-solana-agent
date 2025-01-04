@@ -12,7 +12,7 @@ npx create-solana-agent@latest
 
 - 🎨 Modern, minimalist UI
 <!-- - 📱 Fully responsive design with mobile-first approach -->
-- ⛓️ Interact with 20+ Solana Protocols via Solana Agent Kit
+- ⛓️ Interact with 20+ Solana Protocols via [Solana Agent Kit](https://solanaagentkit.xyz/)
 - 🏗️ Built with:
   - Next 15
   - TypeScript
