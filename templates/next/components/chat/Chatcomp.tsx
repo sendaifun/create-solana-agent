@@ -173,7 +173,8 @@ export function Chatcomp() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!input.trim()) return;
-    router.push("/chat/session");
+    const encodedInput = encodeURIComponent(input);
+    router.push(`/chat/session?initial_message=${encodedInput}`);
   };
 
   return (
