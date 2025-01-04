@@ -1,10 +1,10 @@
-import Chat from "@/components/chat/Chatcomp";
+import { Chatcomp } from "@/components/chat/Chatcomp";
 import React from "react";
 
 const Page = () => {
   return (
     <>
-      <Chat />
+      <Chatcomp />
     </>
   );
 };

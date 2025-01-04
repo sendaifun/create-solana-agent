@@ -1,12 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
-import { SolanaAgentKit } from "solana-agent-kit";
-import { createSolanaTools } from "solana-agent-kit";
 import { HumanMessage } from "@langchain/core/messages";
 import { MemorySaver } from "@langchain/langgraph";
 import { createReactAgent } from "@langchain/langgraph/prebuilt";
 import { ChatOpenAI } from "@langchain/openai";
 import { validateEnvironment } from "@/lib/utils";
-import bs58 from "bs58";
 
 async function initializeAgent() {
   const llm = new ChatOpenAI({
@@ -16,28 +13,17 @@ async function initializeAgent() {
 
   validateEnvironment();
 
-  const solanaAgent = new SolanaAgentKit(
-    bs58.encode(Uint8Array.from(JSON.parse(process.env.SOLANA_PRIVATE_KEY!))),
-    process.env.RPC_URL!,
-    process.env.OPENAI_API_KEY!,
-  );
-
-  const tools = createSolanaTools(solanaAgent);
   const memory = new MemorySaver();
-  const config = { configurable: { thread_id: "Solana Agent Kit!" } };
+  const config = { configurable: { thread_id: "Chat Session" } };
 
   const agent = createReactAgent({
     llm,
-    tools,
+    tools: [],
     checkpointSaver: memory,
     messageModifier: `
-      You are a helpful agent that can interact onchain using the Solana Agent Kit. You are
-      empowered to interact onchain using your tools. If you ever need funds, you can request them from the
-      faucet. If not, you can provide your wallet details and request funds from the user. If there is a 5XX
-      (internal) HTTP error code, ask the user to try again later. If someone asks you to do something you
-      can't do with your currently available tools, you must say so, and encourage them to implement it
-      themselves using the Solana Agent Kit, recommend they go to https://www.solanaagentkit.xyz for more information. Be
-      concise and helpful with your responses. Refrain from restating your tools' descriptions unless it is explicitly requested.
+      You are a helpful AI assistant. You can help users with general questions and tasks.
+      If you're asked about specific functionality that's not available, kindly let the user know
+      and suggest alternatives if possible.
     `,
   });
 
@@ -50,10 +36,7 @@ export async function POST(req: NextRequest) {
 
     const { agent, config } = await initializeAgent();
 
-    const stream = await agent.stream(
-      { messages: [new HumanMessage(message)] },
-      config,
-    );
+    const stream = await agent.stream({ messages: [new HumanMessage(message)] }, config);
 
     let response = "";
 
@@ -68,9 +51,6 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ response });
   } catch (error) {
     console.error("Error:", error);
-    return NextResponse.json(
-      { error: "Internal Server Error" },
-      { status: 500 },
-    );
+    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
   }
 }
