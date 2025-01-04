@@ -1,6 +1,6 @@
 # create-solana-agent
 
-:zap: Get up and running fast with Solana dApps :zap:
+:zap: Get up and running fast with Solana agents :zap:
 
 Just run one simple command to create a new agent chat UI with Solana Agent Kit!
 
