@@ -19,7 +19,9 @@ async function initializeAgent() {
   const solanaAgent = new SolanaAgentKit(
     bs58.encode(Uint8Array.from(JSON.parse(process.env.SOLANA_PRIVATE_KEY!))),
     process.env.RPC_URL!,
-    process.env.OPENAI_API_KEY!,
+    {
+      OPENAI_API_KEY: process.env.OPENAI_API_KEY!,
+    },
   );
 
   const tools = createSolanaTools(solanaAgent);
