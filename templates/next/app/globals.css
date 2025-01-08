@@ -1,76 +1,153 @@
+@import url("https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap");
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --background: 0 0% 7%;
-  --foreground: 0 0% 100%;
-  --card: 0 0% 10%;
-  --card-foreground: 0 0% 100%;
-  --popover: 0 0% 10%;
-  --popover-foreground: 0 0% 100%;
-  --primary: 186 100% 55%;
-  --primary-foreground: 0 0% 0%;
-  --secondary: 0 0% 16%;
-  --secondary-foreground: 0 0% 100%;
-  --muted: 0 0% 16%;
-  --muted-foreground: 0 0% 64%;
-  --accent: 186 100% 55%;
-  --accent-foreground: 0 0% 0%;
-  --destructive: 0 84% 60%;
-  --destructive-foreground: 0 0% 100%;
-  --border: 0 0% 20%;
-  --input: 0 0% 20%;
-  --ring: 186 100% 55%;
-  --radius: 0.5rem;
-}
+@layer base {
+  :root {
+    /* Font families */
+    --font-sans: "Space Grotesk", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 
-.dark {
-  --background: 0 0% 7%;
-  --foreground: 0 0% 100%;
-  --card: 0 0% 10%;
-  --card-foreground: 0 0% 100%;
-  --popover: 0 0% 10%;
-  --popover-foreground: 0 0% 100%;
-  --primary: 186 100% 55%;
-  --primary-foreground: 0 0% 0%;
-  --secondary: 0 0% 16%;
-  --secondary-foreground: 0 0% 100%;
-  --muted: 0 0% 16%;
-  --muted-foreground: 0 0% 64%;
-  --accent: 186 100% 55%;
-  --accent-foreground: 0 0% 0%;
-  --destructive: 0 84% 60%;
-  --destructive-foreground: 0 0% 100%;
-  --border: 0 0% 20%;
-  --input: 0 0% 20%;
-  --ring: 186 100% 55%;
+    /* Colors */
+    --background: 0 0% 97.3%;
+    --foreground: 224 71% 4%;
+    --card: 0 0% 100%;
+    --card-foreground: 224 71% 4%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 224 71% 4%;
+    --primary: 180 66% 40%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 220 14% 96%;
+    --secondary-foreground: 220 10% 46%;
+    --muted: 220 14% 96%;
+    --muted-foreground: 220 9% 46%;
+    --accent: 180 66% 40%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 220 13% 91%;
+    --input: 220 13% 91%;
+    --ring: 180 66% 40%;
+
+    /* Border Radius */
+    --radius: 0.75rem;
+    --radius-sm: 0.5rem;
+    --radius-lg: 1rem;
+    --radius-full: 9999px;
+  }
+
+  .dark {
+    --background: 222 11% 8%;
+    --foreground: 210 8% 97%;
+    --card: 215 13% 12%;
+    --card-foreground: 210 8% 97%;
+    --popover: 215 13% 12%;
+    --popover-foreground: 210 8% 97%;
+    --primary: 180 100% 45%;
+    --primary-foreground: 0 0% 0%;
+    --secondary: 222 11% 12%;
+    --secondary-foreground: 210 8% 97%;
+    --muted: 222 11% 12%;
+    --muted-foreground: 215 8% 65%;
+    --accent: 180 100% 45%;
+    --accent-foreground: 0 0% 0%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 8% 97%;
+    --border: 222 11% 15%;
+    --input: 222 11% 15%;
+    --ring: 180 100% 45%;
+  }
 }
 
 @layer base {
   * {
     @apply border-border;
   }
+
+  html {
+    font-family: var(--font-sans);
+  }
+
   body {
     @apply bg-background text-foreground;
+    font-feature-settings: "ss01", "ss03", "cv01", "cv02", "cv03";
+  }
+
+  /* Typography System */
+  h1 {
+    @apply text-3xl sm:text-4xl font-medium tracking-tight;
+  }
+
+  h2 {
+    @apply text-xl font-semibold tracking-tight;
+  }
+
+  h3 {
+    @apply text-base font-medium tracking-tight;
+  }
+
+  p {
+    @apply text-sm text-muted-foreground leading-relaxed;
+  }
+
+  small {
+    @apply text-xs text-muted-foreground;
+  }
+
+  /* Monospace Elements */
+  code,
+  pre,
+  kbd,
+  .mono {
+    font-family: var(--font-mono);
+    @apply tracking-tight;
+  }
+
+  /* Interactive Elements */
+  .interactive-text {
+    @apply transition-colors duration-200;
+  }
+
+  .text-label {
+    @apply text-xs font-medium uppercase tracking-wide text-muted-foreground;
+  }
+
+  .text-body {
+    @apply text-sm text-muted-foreground leading-relaxed;
+  }
+
+  .text-body-strong {
+    @apply text-sm font-medium text-foreground;
+  }
+
+  .wallet-address {
+    font-family: var(--font-mono);
+    @apply text-xs tracking-tight text-muted-foreground;
   }
 }
 
-/* Add custom scrollbar styling */
+/* Custom scrollbar styles */
 ::-webkit-scrollbar {
   width: 8px;
+  height: 8px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #1A1A1A;
+  background: transparent;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #333;
-  border-radius: 4px;
+  background: hsl(var(--muted-foreground) / 0.2);
+  border: 2px solid transparent;
+  border-radius: 9999px;
+  background-clip: padding-box;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #444;
+  background: hsl(var(--muted-foreground) / 0.3);
+  border: 2px solid transparent;
+  border-radius: 9999px;
+  background-clip: padding-box;
 }
-
