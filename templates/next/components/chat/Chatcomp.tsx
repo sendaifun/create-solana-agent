@@ -5,7 +5,7 @@
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { ArrowRight, LogOut, Menu, MessageSquare, Moon, Plus, Send, Settings, Sun, X } from "lucide-react";
+import { ArrowRight, LogOut, Menu, MessageSquare, Moon, Plus, Send, Sun, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { useTheme } from "next-themes";
 
