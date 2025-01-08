@@ -16,9 +16,11 @@
     "solana",
     "ai",
     "agents",
-    "solana agent kit"
+    "solana agent kit",
+    "solana-agent-kit",
+    "solana-agent"
   ],
-  "author": "arihantbansal",
+  "author": "sendaifun",
   "license": "MIT",
   "devDependencies": {
     "@types/cross-spawn": "^6.0.6",

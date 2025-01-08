@@ -61,10 +61,9 @@ export async function POST(req: NextRequest) {
 
     for await (const chunk of stream) {
       if ("agent" in chunk) {
-        response += chunk.agent.messages[0].content;
-      } else if ("tools" in chunk) {
-        response += chunk.tools.messages[0].content;
-      }
+        console.log("chunk.agent.messages[0].content", chunk.agent.messages[0].content);
+        response += chunk.agent.messages[0].content + "\n";
+      } 
     }
 
     return NextResponse.json({ response });

@@ -6,6 +6,7 @@ import { AGENT_MODES } from "./ModeSelector";
 import { MOCK_WALLETS } from "./WalletSelector";
 import { AgentLogo } from "@/components/layout/AgentLogo";
 import { useSearchParams } from "next/navigation";
+import ReactMarkdown from 'react-markdown';
 
 interface Message {
   id: string;
@@ -42,23 +43,67 @@ function AssistantMessage({ content }: AssistantMessageProps) {
           <AgentLogo />
         </div>
         <div className="px-4 py-3 text-[15px] tracking-[-0.01em] leading-[1.65] font-medium rounded-2xl text-foreground/90 rounded-bl-sm">
-          <div className="whitespace-pre-wrap">
-            {content.split("\n").map((line, i) =>
-              line.startsWith("- ") ? (
-                <div key={i} className="pl-3 text-[14.5px] leading-[1.75] font-normal opacity-90">
-                  {line}
-                </div>
-              ) : line.match(/^\d+\./) ? (
-                <div key={i} className="font-semibold mb-1">
-                  {line}
-                </div>
-              ) : (
-                <div key={i} className={line === "" ? "my-2" : ""}>
-                  {line}
-                </div>
+          <ReactMarkdown
+            components={{
+              // Style code blocks
+              code: ({ inline, className, children, ...props } : any) => {
+                if (inline) {
+                  return (
+                    <code className="bg-accent/10 rounded px-1 py-0.5" {...props}>
+                      {children}
+                    </code>
+                  );
+                }
+                return (
+                  <div className="my-3">
+                    <pre className="bg-accent/10 p-3 rounded-lg overflow-x-auto">
+                      <code {...props}>{children}</code>
+                    </pre>
+                  </div>
+                );
+              },
+              // Style lists
+              ul: ({ children }) => (
+                <ul className="pl-6 my-2 list-disc">{children}</ul>
               ),
-            )}
-          </div>
+              ol: ({ children }) => (
+                <ol className="pl-6 my-2 list-decimal">{children}</ol>
+              ),
+              // Style headings
+              h1: ({ children }) => (
+                <h1 className="text-2xl font-bold my-4">{children}</h1>
+              ),
+              h2: ({ children }) => (
+                <h2 className="text-xl font-bold my-3">{children}</h2>
+              ),
+              h3: ({ children }) => (
+                <h3 className="text-lg font-bold my-2">{children}</h3>
+              ),
+              // Style paragraphs
+              p: ({ children }) => <p className="my-2">{children}</p>,
+              // Style links
+              a: ({ children, href }) => (
+                <a 
+                  href={href} 
+                  className="text-blue-500 hover:underline" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                >
+                  {children}
+                </a>
+              ),
+              // Add custom image component
+              img: ({ src, alt }) => (
+                <img 
+                  src={src} 
+                  alt={alt} 
+                  className="max-w-full h-auto max-h-[150px] object-contain my-2 rounded-lg"
+                />
+              ),
+            }}
+          >
+            {content}
+          </ReactMarkdown>
         </div>
       </div>
     </div>
