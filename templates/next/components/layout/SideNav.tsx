@@ -80,7 +80,7 @@ export default function SideNav() {
                       "group-hover:text-accent",
                     )}
                   >
-                    Your Agent
+                    DeFAI
                   </h1>
                 )}
               </div>
