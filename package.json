@@ -1,6 +1,6 @@
 {
   "name": "create-solana-agent",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Get up and running with AI Agents on Solana powered by Solana Agent Kit",
   "main": "index.js",
   "scripts": {
