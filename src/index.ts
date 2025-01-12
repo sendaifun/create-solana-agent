@@ -57,10 +57,10 @@ export async function main(argv: string[]) {
     {
       projectName: () =>
         p.text({
-          message: "Project name:",
-          initialValue: defaultProjectName,
+          message: `Project name: (${defaultProjectName})`,
+          placeholder: defaultProjectName,
           validate(value) {
-            const targetDir = path.join(process.cwd(), value);
+            const targetDir = path.join(process.cwd(), value || defaultProjectName);
             if (fs.existsSync(targetDir) && fs.readdirSync(targetDir).length > 0) {
               return "Directory already exists and is not empty. Please choose a different name.";
             }
@@ -69,9 +69,9 @@ export async function main(argv: string[]) {
       rpcURL: () =>
         p.text({
           message: "RPC URL:",
-          initialValue: "https://api.mainnet-beta.solana.com",
+          placeholder: "https://api.mainnet-beta.solana.com",
           validate(value) {
-            if (!value.startsWith("https://")) {
+            if (value && !value.startsWith("https://")) {
               return "RPC URL must start with https://";
             }
           },
@@ -79,7 +79,7 @@ export async function main(argv: string[]) {
       openaiApiKey: () =>
         p.text({
           message: "OpenAI API Key:",
-          initialValue: "",
+          placeholder: "sk-...",
           validate(value) {
             if (!value) {
               return "OpenAI API Key is required";
@@ -89,7 +89,7 @@ export async function main(argv: string[]) {
       solanaPrivateKey: () =>
         p.text({
           message: "Solana Private Key:",
-          initialValue: "[]",
+          placeholder: "bs58-encoded-private-key",
           validate(value) {
             if (!value) {
               return "Solana Private Key is required";
@@ -106,33 +106,36 @@ export async function main(argv: string[]) {
   );
 
   const { projectName, rpcURL, openaiApiKey, solanaPrivateKey } = group;
+  
+  const finalProjectName = projectName || defaultProjectName;
+  const finalRpcURL = rpcURL || "https://api.mainnet-beta.solana.com";
 
-  const root = path.join(process.cwd(), projectName);
+  const root = path.join(process.cwd(), finalProjectName);
 
-  const spinner = ora(`Creating ${projectName}...`).start();
+  const spinner = ora(`Creating ${finalProjectName}...`).start();
 
   await copyDir(sourceDir, root);
 
   const pkgPath = path.join(root, "package.json");
   const pkg = JSON.parse(await fs.promises.readFile(pkgPath, "utf-8"));
 
-  pkg.name = toValidPackageName(projectName);
+  pkg.name = toValidPackageName(finalProjectName);
   await fs.promises.writeFile(pkgPath, JSON.stringify(pkg, null, 2));
 
   const envPath = path.join(root, ".env");
   await fs.promises.writeFile(
     envPath,
-    `OPENAI_API_KEY=${openaiApiKey}\nRPC_URL=${rpcURL}\nSOLANA_PRIVATE_KEY=${solanaPrivateKey}`,
+    `OPENAI_API_KEY=${openaiApiKey}\nRPC_URL=${finalRpcURL}\nSOLANA_PRIVATE_KEY=${solanaPrivateKey}`,
   );
 
   spinner.succeed();
 
   console.log(`\n${pc.magenta(`Created new Solana Agent Terminal project in ${root}`)}`);
 
-  console.log(`\nTo get started with ${pc.green(projectName)}, run the following commands:\n`);
+  console.log(`\nTo get started with ${pc.green(finalProjectName)}, run the following commands:\n`);
   if (root !== process.cwd()) {
     console.log(` - cd ${path.relative(process.cwd(), root)}`);
   }
-  console.log(" - npm install");
-  console.log(" - npm run dev");
+  console.log(" - pnpm install");
+  console.log(" - pnpm dev");
 }
