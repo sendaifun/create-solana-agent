@@ -36,25 +36,30 @@ async function copyDir(src: string, dest: string) {
 }
 
 export async function main(argv: string[]) {
-  console.log(pc.cyan(`
+  console.log(
+    pc.cyan(`
     ╭━━━╮╱╱╭━━━╮╱╱╭━╮╱╭╮╱╱╭━━━╮╱╱/╭━━━╮╱╱╭╮
     ┃╭━━╯╱╱┃╭━━╯╱╱┃┃╰╮┃┃╱╱┃╭━╮╰╮╱╱┃╭━╮┃╱╱┃┃
     ┃╰━━╮╱╱┃╰━━╮╱╱┃╭╮╰╯┃╱╱┃┃╱┃ ┃╱╱┃┃╱┃┃╱╱┃┃
     ╰━━╮┃╱╱┃╭━━╯╱╱┃┃╰╮┃┃╱╱┃┃╱┃ ┃╱╱┃╰━╯┃╱╱┃┃
     ┃╰━╯┃╱╱┃╰━━╮╱╱┃┃╱┃┃┃╱╱┃╰━╯╭╯╱/┃╭━╮┃╱╱┃┃
     ╰━━━╯╱╱╰━━━╯╱╱╰╯╱╰━╯╱╱╰━━━╯╱╱/╰╯╱╰╯╱╱╰╯
- `));
+ `),
+  );
 
   const defaultProjectName = "solana-agent-terminal";
+  const defaultRpcURL = "https://api.mainnet-beta.solana.com";
 
   const group = await p.group(
     {
       projectName: () =>
         p.text({
-          message: `Project name: (${defaultProjectName})`,
+          message: "Project name:",
           placeholder: defaultProjectName,
+          defaultValue: "",
           validate(value) {
-            const targetDir = path.join(process.cwd(), value || defaultProjectName);
+            if (!value) return;
+            const targetDir = path.join(process.cwd(), value);
             if (fs.existsSync(targetDir) && fs.readdirSync(targetDir).length > 0) {
               return "Directory already exists and is not empty. Please choose a different name.";
             }
@@ -63,8 +68,10 @@ export async function main(argv: string[]) {
       rpcURL: () =>
         p.text({
           message: "RPC URL:",
-          placeholder: "https://api.mainnet-beta.solana.com",
+          placeholder: defaultRpcURL,
+          defaultValue: "",
           validate(value) {
+            if (!value) return;
             if (value && !value.startsWith("https://")) {
               return "RPC URL must start with https://";
             }
@@ -74,6 +81,7 @@ export async function main(argv: string[]) {
         p.text({
           message: "OpenAI API Key:",
           placeholder: "sk-...",
+          defaultValue: "",
           validate(value) {
             if (!value) {
               return "OpenAI API Key is required";
@@ -83,7 +91,8 @@ export async function main(argv: string[]) {
       solanaPrivateKey: () =>
         p.text({
           message: "Solana Private Key:",
-          initialValue: "",
+          placeholder: "[Press Enter to input your private key]",
+          defaultValue: "",
           validate(value) {
             if (!value) {
               return "Solana Private Key is required";
@@ -100,9 +109,9 @@ export async function main(argv: string[]) {
   );
 
   const { projectName, rpcURL, openaiApiKey, solanaPrivateKey } = group;
-  
+
   const finalProjectName = projectName || defaultProjectName;
-  const finalRpcURL = rpcURL || "https://api.mainnet-beta.solana.com";
+  const finalRpcURL = rpcURL || defaultRpcURL;
 
   const root = path.join(process.cwd(), finalProjectName);
 
