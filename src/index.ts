@@ -36,20 +36,14 @@ async function copyDir(src: string, dest: string) {
 }
 
 export async function main(argv: string[]) {
-  console.log(
-    `${pc.greenBright(`
-        //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        //                                                                                                                              //
-        //                                      ::::::::  :::::::::: ::::    ::: :::::::::      :::     :::::::::::                     //   
-        //                                    :+:    :+: :+:        :+:+:   :+: :+:    :+:   :+: :+:       :+:                          //
-        //                                   +:+        +:+        :+:+:+  +:+ +:+    +:+  +:+   +:+      +:+                           //
-        //                                  +#++:++#++ +#++:++#   +#+ +:+ +#+ +#+    +:+ +#++:++#++:     +#+                            //
-        //                                        +#+ +#+        +#+  +#+#+# +#+    +#+ +#+     +#+     +#+                             //
-        //                                #+#    #+# #+#        #+#   #+#+# #+#    #+# #+#     #+#     #+#                              //
-        //                                ########  ########## ###    #### #########  ###     ### ###########                           //   
-        //                                                                                                                              //
-        //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////`)}\n\n`,
-  );
+  console.log(pc.cyan(`
+    ╭━━━╮╱╱╭━━━╮╱╱╭━╮╱╭╮╱╱╭━━━╮╱╱╭━━━╮╱╱╭╮
+    ┃╭━━╯╱╱┃╭━━╯╱╱┃┃╰╮┃┃╱╱┃╭━╮┃╱╱┃╭━╮┃╱╱┃┃
+    ┃╰━━╮╱╱┃╰━━╮╱╱┃╭╮╰╯┃╱╱┃┃╱┃┃╱╱┃┃╱┃┃╱╱┃┃
+    ╰━━╮┃╱╱┃╭━━╯╱╱┃┃╰╮┃┃╱╱┃┃╱┃┃╱╱┃╰━╯┃╱╱┃┃
+    ┃╰━╯┃╱╱┃╰━━╮╱╱┃┃╱┃┃┃╱╱┃╰━╯┃╱╱┃╭━╮┃╱╱┃┃
+    ╰━━━╯╱╱╰━━━╯╱╱╰╯╱╰━╯╱╱╰━━━╯╱╱╰╯╱╰╯╱╱╰╯
+ `));
 
   const defaultProjectName = "solana-agent-terminal";
 
@@ -89,7 +83,7 @@ export async function main(argv: string[]) {
       solanaPrivateKey: () =>
         p.text({
           message: "Solana Private Key:",
-          placeholder: "bs58-encoded-private-key",
+          initialValue: "",
           validate(value) {
             if (!value) {
               return "Solana Private Key is required";
@@ -137,5 +131,5 @@ export async function main(argv: string[]) {
     console.log(` - cd ${path.relative(process.cwd(), root)}`);
   }
   console.log(" - pnpm install");
-  console.log(" - pnpm dev");
+  console.log(" - pnpm run dev");
 }
