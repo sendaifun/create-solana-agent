@@ -45,14 +45,14 @@ export function ChatInput({
               <div className="flex items-center min-w-fit">
                 <ModeSelector selectedMode={selectedMode} onModeChange={setSelectedMode} />
                 <div className="mx-4 h-4 w-[1px] bg-border shrink-0" />
-                <WalletSelector selectedWallet={selectedWallet} onWalletChange={setSelectedWallet} />
+                {/* <WalletSelector selectedWallet={selectedWallet} onWalletChange={setSelectedWallet} /> */}
               </div>
             </div>
             <div className="ml-auto flex items-center">
-              <div className="flex items-center gap-2">
+              {/* <div className="flex items-center gap-2">
                 <span className="text-sm text-muted-foreground">Auto Sign</span>
                 <Toggle checked={isEnabled} onCheckedChange={setIsEnabled} aria-label="Auto sign toggle" />
-              </div>
+              </div> */}
               <div className="mx-4 h-4 w-[1px] bg-border shrink-0" />
               <div className="flex items-center gap-2 text-xs text-muted-foreground">
                 <kbd className="px-2 py-1 text-[11px] font-medium bg-muted rounded-md">⌘</kbd>
