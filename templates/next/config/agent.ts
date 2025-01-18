@@ -2,7 +2,6 @@ import { MemorySaver } from "@langchain/langgraph";
 import { createReactAgent } from "@langchain/langgraph/prebuilt";
 import { ChatOpenAI } from "@langchain/openai";
 import { validateEnvironment } from "@/lib/utils";
-import bs58 from "bs58";
 import { SolanaAgentKit } from "solana-agent-kit";
 import { createSolanaTools } from "solana-agent-kit";
 

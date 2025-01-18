@@ -6,7 +6,7 @@ import { AGENT_MODES } from "./ModeSelector";
 import { MOCK_WALLETS } from "./WalletSelector";
 import { AgentLogo } from "@/components/layout/AgentLogo";
 import { useSearchParams } from "next/navigation";
-import ReactMarkdown from 'react-markdown';
+import ReactMarkdown from "react-markdown";
 
 interface Message {
   id: string;
@@ -46,7 +46,7 @@ function AssistantMessage({ content }: AssistantMessageProps) {
           <ReactMarkdown
             components={{
               // Style code blocks
-              code: ({ inline, className, children, ...props } : any) => {
+              code: ({ inline, className, children, ...props }: any) => {
                 if (inline) {
                   return (
                     <code className="bg-accent/10 rounded px-1 py-0.5" {...props}>
@@ -63,42 +63,23 @@ function AssistantMessage({ content }: AssistantMessageProps) {
                 );
               },
               // Style lists
-              ul: ({ children }) => (
-                <ul className="pl-6 my-2 list-disc">{children}</ul>
-              ),
-              ol: ({ children }) => (
-                <ol className="pl-6 my-2 list-decimal">{children}</ol>
-              ),
+              ul: ({ children }) => <ul className="pl-6 my-2 list-disc">{children}</ul>,
+              ol: ({ children }) => <ol className="pl-6 my-2 list-decimal">{children}</ol>,
               // Style headings
-              h1: ({ children }) => (
-                <h1 className="text-2xl font-bold my-4">{children}</h1>
-              ),
-              h2: ({ children }) => (
-                <h2 className="text-xl font-bold my-3">{children}</h2>
-              ),
-              h3: ({ children }) => (
-                <h3 className="text-lg font-bold my-2">{children}</h3>
-              ),
+              h1: ({ children }) => <h1 className="text-2xl font-bold my-4">{children}</h1>,
+              h2: ({ children }) => <h2 className="text-xl font-bold my-3">{children}</h2>,
+              h3: ({ children }) => <h3 className="text-lg font-bold my-2">{children}</h3>,
               // Style paragraphs
               p: ({ children }) => <p className="my-2">{children}</p>,
               // Style links
               a: ({ children, href }) => (
-                <a 
-                  href={href} 
-                  className="text-blue-500 hover:underline" 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                >
+                <a href={href} className="text-blue-500 hover:underline" target="_blank" rel="noopener noreferrer">
                   {children}
                 </a>
               ),
               // Add custom image component
               img: ({ src, alt }) => (
-                <img 
-                  src={src} 
-                  alt={alt} 
-                  className="max-w-full h-auto max-h-[150px] object-contain my-2 rounded-lg"
-                />
+                <img src={src} alt={alt} className="max-w-full h-auto max-h-[150px] object-contain my-2 rounded-lg" />
               ),
             }}
           >
@@ -142,6 +123,40 @@ export function ChatSession() {
 
     setMessages((prev) => [...prev, newMessage]);
     setInput("");
+
+    if (input.toLowerCase().includes("trump")) {
+      try {
+        const response = await fetch("/api/trump", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ message: input }),
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to get response");
+        }
+
+        const data = await response.json();
+        const assistantMessage: Message = {
+          id: String(messages.length + 2),
+          content: data.response,
+          role: "assistant",
+          timestamp: new Date(),
+        };
+
+        setMessages((prev) => [...prev, assistantMessage]);
+      } catch (error) {
+        console.error("Error:", error);
+        const errorMessage: Message = {
+          id: String(messages.length + 2),
+          content: "Sorry, there was an error processing your request.",
+          role: "assistant",
+          timestamp: new Date(),
+        };
+        setMessages((prev) => [...prev, errorMessage]);
+      }
+      return;
+    }
 
     try {
       const response = await fetch("/api/chat", {
