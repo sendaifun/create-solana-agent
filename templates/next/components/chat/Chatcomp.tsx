@@ -1,10 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { Coin, ImageSquare, Images, ArrowsLeftRight } from "@phosphor-icons/react";
 import { AGENT_MODES } from "./ModeSelector";
-import { MOCK_WALLETS } from "./WalletSelector";
+import { MOCK_WALLETS, MOCK_MODELS } from "./ChatInput";
 import { IntegrationCard } from "./IntegrationCard";
 import { ChatInput } from "./ChatInput";
 import {
@@ -53,108 +53,144 @@ const SUGGESTIONS = [
     description: "Create a memecoin on pump.fun",
     logo: PumpFunLogo,
     category: "token",
+    prompt:
+      "Help me create a new memecoin on pump.fun with the following specifications: token name, supply, and initial liquidity pool setup.",
   },
   {
     title: "NFT Management",
     description: "Deploy collections, mint NFTs, manage metadata and royalties via Metaplex",
     logo: MetaplexLogo,
     category: "nfts",
+    prompt:
+      "I want to create an NFT collection using Metaplex. Guide me through the process of setting up metadata, royalties, and deployment.",
   },
   {
     title: "Jupiter Exchange",
     description: "Execute token swaps using Jupiter Exchange for best rates",
     logo: JupiterLogo,
     category: "defi",
+    prompt:
+      "I want to swap 100 USDC for SOL using Jupiter Exchange. Guide me through the process of setting up the swap and providing the necessary parameters.",
   },
   {
     title: "Sollayer",
     description: "Explore and interact with Solana's Layer 2 solutions",
     logo: SollayerLogo,
     category: "infrastructure",
+    prompt:
+      "I want to explore Solana's Layer 2 solutions. Provide me with information on the latest developments and how to interact with them.",
   },
   {
     title: "Manifest",
     description: "Create and manage xNFTs for your dApp",
     logo: ManifestLogo,
     category: "nfts",
+    prompt:
+      "I want to create an xNFT collection using Manifest. Guide me through the process of setting up metadata, royalties, and deployment.",
   },
   {
     title: "Compressed Airdrops",
     description: "Send Zk compressed airdrops using Light Protocol and Helius",
     logo: LightProtocolLogo,
     category: "token",
+    prompt:
+      "I want to send a Zk compressed airdrop using Light Protocol and Helius. Guide me through the process of setting up the airdrop and providing the necessary parameters.",
   },
   {
     title: "Price Feeds",
     description: "Fetch real-time asset prices using Pyth Network",
     logo: PythLogo,
     category: "data",
+    prompt:
+      "I want to fetch real-time asset prices using Pyth Network. Provide me with information on the latest prices and how to interact with them.",
   },
   {
     title: "DexScreener",
     description: "Track real-time DEX trading data and market analytics",
     logo: DexScreenerLogo,
     category: "data",
+    prompt:
+      "I want to track real-time DEX trading data and market analytics. Provide me with information on the latest trading data and how to interact with them.",
   },
   {
     title: "Raydium Pools",
     description: "Create liquidity pools (CPMM, CLMM, AMMv4) on Raydium",
     logo: RaydiumLogo,
     category: "defi",
+    prompt:
+      "I want to create liquidity pools (CPMM, CLMM, AMMv4) on Raydium. Guide me through the process of setting up the pools and providing the necessary parameters.",
   },
   {
     title: "Lending by Lulo",
     description: "Access best APR for USDC lending via Lulo protocol",
     logo: LuloLogo,
     category: "defi",
+    prompt:
+      "I want to access best APR for USDC lending via Lulo protocol. Provide me with information on the latest lending rates and how to interact with them.",
   },
   {
     title: "Arcade Games",
     description: "Send and interact with Solana Arcade Games",
     logo: ArcadeLogo,
     category: "gaming",
+    prompt:
+      "I want to send and interact with Solana Arcade Games. Provide me with information on the latest games and how to interact with them.",
   },
   {
     title: "AI Integration",
     description: "LangChain tools, Vercel AI SDK, and autonomous agent support",
     logo: AILogo,
     category: "development",
+    prompt:
+      "I want to use LangChain tools, Vercel AI SDK, and autonomous agent support. Provide me with information on the latest tools and how to interact with them.",
   },
   {
     title: "Meteora DAMM",
     description: "Dynamic Automated Market Maker for efficient liquidity provision",
     logo: MeteoraLogo,
     category: "defi",
+    prompt:
+      "I want to use Dynamic Automated Market Maker for efficient liquidity provision. Provide me with information on the latest tools and how to interact with them.",
   },
   {
     title: "Dialect Chat",
     description: "Integrate web3 messaging and notifications for your dApp",
     logo: DialectLogo,
     category: "social",
+    prompt:
+      "I want to integrate web3 messaging and notifications for my dApp. Provide me with information on the latest tools and how to interact with them.",
   },
   {
     title: "Domain Services",
     description: "Register and resolve SNS domains and Alldomains",
     logo: SNSLogo,
     category: "infrastructure",
+    prompt:
+      "I want to register and resolve SNS domains and Alldomains. Provide me with information on the latest tools and how to interact with them.",
   },
   {
     title: "Jito Features",
     description: "Jito Bundles and JupSOL staking integration",
     logo: JitoLogo,
     category: "infrastructure",
+    prompt:
+      "I want to use Jito Bundles and JupSOL staking integration. Provide me with information on the latest tools and how to interact with them.",
   },
   {
     title: "Tensor Trading",
     description: "Trade NFTs with advanced analytics and real-time data",
     logo: TensorLogo,
     category: "nfts",
+    prompt:
+      "I want to trade NFTs with advanced analytics and real-time data. Provide me with information on the latest tools and how to interact with them.",
   },
   {
     title: "Magic Eden",
     description: "List and trade NFTs on the largest Solana marketplace",
     logo: MagicEdenLogo,
     category: "nfts",
+    prompt:
+      "I want to list and trade NFTs on the largest Solana marketplace. Provide me with information on the latest tools and how to interact with them.",
   },
 ] as const;
 
@@ -163,7 +199,9 @@ export function Chatcomp() {
   const [input, setInput] = useState("");
   const [selectedMode, setSelectedMode] = useState(AGENT_MODES[0]);
   const [selectedWallet, setSelectedWallet] = useState(MOCK_WALLETS[0]);
+  const [selectedModel, setSelectedModel] = useState(MOCK_MODELS[0]);
   const [activeIntegrationCategory, setActiveIntegrationCategory] = useState<CategoryId>("all");
+  const inputSectionRef = useRef<HTMLDivElement>(null);
 
   const filteredIntegrations =
     activeIntegrationCategory === "all"
@@ -180,7 +218,7 @@ export function Chatcomp() {
   return (
     <div className="flex flex-col items-center justify-center min-h-screen px-4 py-16 sm:py-32 scroll-smooth">
       <div className="w-full max-w-3xl flex flex-col gap-[10vh] sm:gap-[20vh] mt-[10vh] sm:mt-[20vh]">
-        <div className="flex flex-col gap-8 sm:gap-12 w-full">
+        <div className="flex flex-col gap-8 sm:gap-12 w-full" ref={inputSectionRef}>
           <div className="space-y-4">
             <h1 className="text-2xl sm:text-3xl md:text-4xl font-medium text-foreground text-center">
               What can I help with?
@@ -197,6 +235,8 @@ export function Chatcomp() {
                 setSelectedMode={setSelectedMode}
                 selectedWallet={selectedWallet}
                 setSelectedWallet={setSelectedWallet}
+                selectedModel={selectedModel}
+                setSelectedModel={setSelectedModel}
               />
             </div>
             <div className="flex flex-row flex-wrap gap-2 items-center justify-center">
@@ -253,7 +293,11 @@ export function Chatcomp() {
                 description={integration.description}
                 logo={integration.logo}
                 category={integration.category}
-                onClick={() => router.push("/chat/session")}
+                onClick={() => {
+                  setInput(integration.prompt);
+                  (document.querySelector('input[type="text"]') as HTMLInputElement)?.focus();
+                  inputSectionRef.current?.scrollIntoView({ behavior: "smooth" });
+                }}
               />
             ))}
           </div>
