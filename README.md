@@ -85,7 +85,7 @@ export default {
 UI components are built using shadcn/ui. Add new components:
 
 ```bash
-npx shadcn-ui add [component-name]
+npx shadcn add [component-name]
 ```
 ## License
 
