@@ -28,6 +28,7 @@ import {
   MagicEdenLogo,
 } from "./icons";
 import { cn } from "@/lib/utils";
+import { useChatStore } from '@/store/useChatStore';
 
 const QUICK_SUGGESTIONS = [
   { text: "Launch a Memecoin", category: "NFTs", icon: Coin },
@@ -202,6 +203,7 @@ export function Chatcomp() {
   const [selectedModel, setSelectedModel] = useState(MOCK_MODELS[0]);
   const [activeIntegrationCategory, setActiveIntegrationCategory] = useState<CategoryId>("all");
   const inputSectionRef = useRef<HTMLDivElement>(null);
+  const setInitialMessage = useChatStore((state: any) => state.setInitialMessage);
 
   const filteredIntegrations =
     activeIntegrationCategory === "all"
@@ -211,8 +213,8 @@ export function Chatcomp() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!input.trim()) return;
-    const encodedInput = encodeURIComponent(input);
-    router.push(`/chat/session?initial_message=${encodedInput}`);
+    setInitialMessage(input);
+    router.push('/chat/session');
   };
 
   return (

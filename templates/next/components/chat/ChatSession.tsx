@@ -1,12 +1,11 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
-import { ChatInput } from "./ChatInput";
-import { AGENT_MODES } from "./ModeSelector";
-import { MOCK_WALLETS } from "./WalletSelector";
 import { AgentLogo } from "@/components/layout/AgentLogo";
-import { useSearchParams } from "next/navigation";
+import { useChatStore } from '@/store/useChatStore';
+import { useEffect, useRef, useState } from "react";
 import ReactMarkdown from 'react-markdown';
+import { ChatInput, MOCK_MODELS, MOCK_WALLETS } from "./ChatInput";
+import { AGENT_MODES } from "./ModeSelector";
 
 interface Message {
   id: string;
@@ -116,9 +115,11 @@ export function ChatSession() {
   const [isLoading, setIsLoading] = useState(false);
   const [selectedMode, setSelectedMode] = useState(AGENT_MODES[0]);
   const [selectedWallet, setSelectedWallet] = useState(MOCK_WALLETS[0]);
+  const [selectedModel, setSelectedModel] = useState(MOCK_MODELS[0]);
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const searchParams = useSearchParams();
   const initialMessageSent = useRef(false);
+
+  const chatStoreInitialMessage = useChatStore((state: any) => state.initialMessage);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -178,14 +179,11 @@ export function ChatSession() {
   };
 
   useEffect(() => {
-    const initialMessage = searchParams.get("initial_message");
-
-    if (initialMessage && !initialMessageSent.current) {
-      const decodedMessage = decodeURIComponent(initialMessage);
-      handleInitialMessage(decodedMessage);
+    if (chatStoreInitialMessage && !initialMessageSent.current) {
+      handleInitialMessage(chatStoreInitialMessage);
       initialMessageSent.current = true;
     }
-  }, [searchParams]);
+  }, [chatStoreInitialMessage]);
 
   const handleInitialMessage = async (message: string) => {
     const newMessage: Message = {
@@ -205,7 +203,10 @@ export function ChatSession() {
         body: JSON.stringify({ message }),
       });
 
+      console.log("response", response);  
+
       if (!response.ok) {
+        console.log("Error: ", response);
         throw new Error("Failed to get response");
       }
 
@@ -273,6 +274,8 @@ export function ChatSession() {
             setSelectedMode={setSelectedMode}
             selectedWallet={selectedWallet}
             setSelectedWallet={setSelectedWallet}
+            selectedModel={selectedModel}
+            setSelectedModel={setSelectedModel}
           />
         </div>
       </div>
