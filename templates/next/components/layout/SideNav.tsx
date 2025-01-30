@@ -10,6 +10,7 @@ import { MobileNav } from "./MobileNav";
 import { HISTORY_ITEMS } from "@/config/history";
 import { useChatStore } from "@/store/useChatStore";
 import { useRouter } from "next/navigation";
+
 export default function SideNav() {
   const [selectedConversation, setSelectedConversation] = useState<number | null>(null);
   const router = useRouter();
@@ -31,6 +32,11 @@ export default function SideNav() {
 
   const toggleSidebar = () => {
     setIsExpanded(!isExpanded);
+  };
+
+  const handleSessionClick = (sessionId: number) => {
+    setCurrentSession(sessionId);
+    router.push(`/chat/${sessionId}`);
   };
 
   return (
@@ -136,7 +142,7 @@ export default function SideNav() {
                       "overflow-hidden relative",
                       currentSessionId === item.id ? "bg-muted" : "hover:bg-muted/50",
                     )}
-                    onClick={() => setCurrentSession(item.id)}
+                    onClick={() => handleSessionClick(item.id)}
                   >
                     <div className="w-full">
                       <div

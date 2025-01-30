@@ -1,11 +1,18 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 
+interface Message {
+  id: string;
+  content: string;
+  role: "user" | "assistant";
+  timestamp: Date;
+}
+
 interface ChatSession {
-  id: number
-  title: string
-  timestamp: string
-  messages: Array<{ role: 'user' | 'assistant'; content: string }>
+  id: number;
+  title: string;
+  timestamp: string;
+  messages: Message[];  // Update to use Message type
 }
 
 interface ChatStore {
@@ -15,7 +22,7 @@ interface ChatStore {
   setInitialMessage: (message: string) => void
   addSession: () => ChatSession
   setCurrentSession: (sessionId: number) => void
-  addMessageToSession: (sessionId: number, message: { role: 'user' | 'assistant'; content: string }) => void
+  addMessageToSession: (sessionId: number, message: { role: "user" | "assistant"; content: string }) => void
   deleteSession: (sessionId: number) => void
   getSessionById: (sessionId: number) => ChatSession | undefined
 }
@@ -33,29 +40,44 @@ export const useChatStore = create<ChatStore>()(
           title: 'New Chat',
           timestamp: new Date().toLocaleString(),
           messages: []
-        }
+        };
         set((state) => ({
           sessions: [newSession, ...state.sessions],
           currentSessionId: newSession.id
-        }))
-        return newSession
+        }));
+        return newSession;
       },
       setCurrentSession: (sessionId: number) => set({ currentSessionId: sessionId }),
-      addMessageToSession: (sessionId: number, message) => {
-        set((state) => ({
-          sessions: state.sessions.map((session) => {
+      addMessageToSession: (sessionId: number, message: { role: "user" | "assistant"; content: string }) => {
+        console.log('Adding message to session:', sessionId, message); // Debug log
+        
+        set((state) => {
+          const updatedSessions = state.sessions.map((session) => {
             if (session.id === sessionId) {
+              const newMessage: Message = {
+                id: String(Date.now()),
+                content: message.content,
+                role: message.role,
+                timestamp: new Date()
+              };
+              
+              console.log('Current session messages:', session.messages); // Debug log
+              console.log('New message:', newMessage); // Debug log
+              
               return {
                 ...session,
-                messages: [...session.messages, message],
-                title: message.role === 'user' && session.title === 'New Chat' 
+                title: session.title === 'New Chat' && message.role === 'user' 
                   ? message.content.slice(0, 30) + '...'
-                  : session.title
-              }
+                  : session.title,
+                messages: [...session.messages, newMessage]
+              };
             }
-            return session
-          })
-        }))
+            return session;
+          });
+
+          console.log('Updated sessions:', updatedSessions); // Debug log
+          return { sessions: updatedSessions };
+        });
       },
       deleteSession: (sessionId: number) => set((state) => ({
         sessions: state.sessions.filter((session) => session.id !== sessionId),
@@ -64,7 +86,9 @@ export const useChatStore = create<ChatStore>()(
           : state.currentSessionId
       })),
       getSessionById: (sessionId: number) => {
-        return get().sessions.find(session => session.id === sessionId)
+        const session = get().sessions.find(s => s.id === sessionId);
+        console.log('Getting session:', sessionId, session); // Debug log
+        return session;
       },
     }),
     {

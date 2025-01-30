@@ -18,6 +18,11 @@ interface UserMessageProps {
   content: string;
 }
 
+interface ChatSessionProps {
+  sessionId: number;
+  initialMessages: Array<Message>;
+}
+
 function UserMessage({ content }: UserMessageProps) {
   return (
     <div className="flex justify-end">
@@ -109,15 +114,16 @@ function AssistantMessage({ content }: AssistantMessageProps) {
   );
 }
 
-export function ChatSession() {
-  const [input, setInput] = useState("");
-  const [messages, setMessages] = useState<Message[]>([]);
+export function ChatSession({ sessionId, initialMessages }: ChatSessionProps) {
+  const [messages, setMessages] = useState<Message[]>(initialMessages);
   const [isLoading, setIsLoading] = useState(false);
+  const [input, setInput] = useState("");
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const apiCallMade = useRef(false);
+  const { addMessageToSession, getSessionById } = useChatStore();
   const [selectedMode, setSelectedMode] = useState(AGENT_MODES[0]);
   const [selectedWallet, setSelectedWallet] = useState(MOCK_WALLETS[0]);
   const [selectedModel, setSelectedModel] = useState(MOCK_MODELS[0]);
-  const messagesEndRef = useRef<HTMLDivElement>(null);
-  const initialMessageSent = useRef(false);
 
   const chatStoreInitialMessage = useChatStore((state: any) => state.initialMessage);
 
@@ -129,19 +135,69 @@ export function ChatSession() {
     scrollToBottom();
   }, [messages]);
 
+  useEffect(() => {
+    const session = getSessionById(sessionId);
+    if (session?.messages) {
+      setMessages(session.messages);
+      
+      // If only one user message exists and API hasn't been called
+      if (session.messages.length === 1 && 
+          session.messages[0].role === 'user' && 
+          !apiCallMade.current) {
+        apiCallMade.current = true;
+        handleApiCall(session.messages[0].content);
+      }
+    }
+  }, [sessionId]);
+
+  const handleApiCall = async (message: string) => {
+    setIsLoading(true);
+    try {
+      const response = await fetch("/api/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message }),
+      });
+
+      if (!response.ok) throw new Error("Failed to get response");
+
+      const data = await response.json();
+      
+      // Add assistant message
+      addMessageToSession(sessionId, {
+        role: 'assistant',
+        content: data.response
+      });
+
+      // Refresh messages from store
+      const updatedSession = getSessionById(sessionId);
+      if (updatedSession?.messages) {
+        setMessages(updatedSession.messages);
+      }
+    } catch (error) {
+      console.error("Error:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!input.trim()) return;
     setIsLoading(true);
 
-    const newMessage: Message = {
-      id: String(messages.length + 1),
+    // Add user message
+    const userMessage: Message = {
+      id: String(Date.now()),
       content: input,
       role: "user",
-      timestamp: new Date(),
+      timestamp: new Date()
     };
 
-    setMessages((prev) => [...prev, newMessage]);
+    addMessageToSession(sessionId, {
+      role: 'user',
+      content: input
+    });
     setInput("");
 
     try {
@@ -151,83 +207,23 @@ export function ChatSession() {
         body: JSON.stringify({ message: input }),
       });
 
-      if (!response.ok) {
-        throw new Error("Failed to get response");
-      }
+      if (!response.ok) throw new Error("Failed to get response");
 
       const data = await response.json();
-      const assistantMessage: Message = {
-        id: String(messages.length + 2),
-        content: data.response,
-        role: "assistant",
-        timestamp: new Date(),
-      };
-
-      setMessages((prev) => [...prev, assistantMessage]);
-    } catch (error) {
-      console.error("Error:", error);
-      const errorMessage: Message = {
-        id: String(messages.length + 2),
-        content: "Sorry, there was an error processing your request.",
-        role: "assistant",
-        timestamp: new Date(),
-      };
-      setMessages((prev) => [...prev, errorMessage]);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    if (chatStoreInitialMessage && !initialMessageSent.current) {
-      handleInitialMessage(chatStoreInitialMessage);
-      initialMessageSent.current = true;
-    }
-  }, [chatStoreInitialMessage]);
-
-  const handleInitialMessage = async (message: string) => {
-    const newMessage: Message = {
-      id: "1",
-      content: message,
-      role: "user",
-      timestamp: new Date(),
-    };
-
-    setMessages([newMessage]);
-    setIsLoading(true);
-
-    try {
-      const response = await fetch("/api/chat", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message }),
+      
+      // Add assistant message
+      addMessageToSession(sessionId, {
+        role: 'assistant',
+        content: data.response
       });
 
-      console.log("response", response);  
-
-      if (!response.ok) {
-        console.log("Error: ", response);
-        throw new Error("Failed to get response");
+      // Refresh messages from store
+      const updatedSession = getSessionById(sessionId);
+      if (updatedSession?.messages) {
+        setMessages(updatedSession.messages);
       }
-
-      const data = await response.json();
-      const assistantMessage: Message = {
-        id: "2",
-        content: data.response,
-        role: "assistant",
-        timestamp: new Date(),
-      };
-
-      setMessages((prev) => [...prev, assistantMessage]);
     } catch (error) {
       console.error("Error:", error);
-      const errorMessage: Message = {
-        id: "2",
-        content: "Sorry, there was an error processing your request.",
-        role: "assistant",
-        timestamp: new Date(),
-      };
-      setMessages((prev) => [...prev, errorMessage]);
     } finally {
       setIsLoading(false);
     }

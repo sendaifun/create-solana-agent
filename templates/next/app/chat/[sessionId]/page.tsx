@@ -5,6 +5,7 @@ import { useChatStore } from '@/store/useChatStore';
 import { Chatcomp } from '@/components/chat/Chatcomp';
 import { redirect } from 'next/navigation';
 import { Chat } from '@phosphor-icons/react';
+import { ChatSession } from '@/components/chat/ChatSession';
 
 export default function ChatPage() {
   const params = useParams();
@@ -17,5 +18,5 @@ export default function ChatPage() {
     redirect('/');
   }
 
-  return <Chatcomp sessionId={sessionId} />;
+  return <ChatSession sessionId={sessionId} initialMessages={session.messages} />;
 } 
