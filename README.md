@@ -42,7 +42,7 @@ solana-agent-terminal/
 ### Prerequisites
 
 - Node.js 18.17 or later
-- npm, yarn, or pnpm
+- npm, yarn, or pnpm (latest versions preferred)
 
 ### Installation
 

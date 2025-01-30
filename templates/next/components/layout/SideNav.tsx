@@ -1,19 +1,22 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { CaretLeft, CaretRight, Plus, Keyboard } from "@phosphor-icons/react";
+import { CaretLeft, CaretRight, Plus, Keyboard, Trash } from "@phosphor-icons/react";
 import { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
 import { AgentLogo } from "./AgentLogo";
 import { UserProfile } from "./UserProfile";
 import { MobileNav } from "./MobileNav";
 import { HISTORY_ITEMS } from "@/config/history";
-
+import { useChatStore } from "@/store/useChatStore";
+import { useRouter } from "next/navigation";
 export default function SideNav() {
   const [selectedConversation, setSelectedConversation] = useState<number | null>(null);
+  const router = useRouter();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isExpanded, setIsExpanded] = useState(true);
   const [isMobile, setIsMobile] = useState(false);
+  const { sessions, currentSessionId, addSession, setCurrentSession, deleteSession } = useChatStore();
 
   useEffect(() => {
     const checkMobile = () => {
@@ -68,7 +71,7 @@ export default function SideNav() {
                   "gap-2 sm:gap-3 md:group py-1",
                   !isExpanded && "md:justify-center",
                 )}
-                onClick={() => setIsExpanded(!isExpanded)}
+                onClick={() => router.push('/')}
               >
                 <AgentLogo />
                 {(isExpanded || (!isExpanded && isMobile)) && (
@@ -98,6 +101,7 @@ export default function SideNav() {
                 "h-11 bg-accent/10 text-accent hover:bg-accent/20",
                 !isExpanded && !isMobile && "justify-center p-2",
               )}
+              onClick={addSession}
             >
               <Plus size={17} weight="bold" />
               {(isExpanded || (!isExpanded && isMobile)) && (
@@ -119,34 +123,47 @@ export default function SideNav() {
           {(isExpanded || (!isExpanded && isMobile)) && (
             <div className="flex-1 min-h-0">
               <div className="flex items-center justify-between px-6 py-2 shrink-0">
-                <p className="text-sm font-medium text-muted-foreground">Recent</p>
-                <span className="text-xs text-muted-foreground">{HISTORY_ITEMS.length} chats</span>
+                <div className="text-sm font-medium text-muted-foreground">Recent</div>
+                <div className="text-xs text-muted-foreground">{sessions.length} chats</div>
               </div>
               <div className="px-3 space-y-1">
-                {HISTORY_ITEMS.map((item) => (
+                {sessions.map((item) => (
                   <Button
                     key={item.id}
                     variant="ghost"
                     className={cn(
-                      "flex flex-col items-start w-full px-2 sm:px-3 py-2 sm:py-2.5 h-auto",
-                      "overflow-hidden",
-                      selectedConversation === item.id ? "bg-muted" : "hover:bg-muted/50",
+                      "group flex flex-col items-start w-full px-2 sm:px-3 py-2 sm:py-2.5 h-auto",
+                      "overflow-hidden relative",
+                      currentSessionId === item.id ? "bg-muted" : "hover:bg-muted/50",
                     )}
-                    onClick={() => setSelectedConversation(item.id)}
+                    onClick={() => setCurrentSession(item.id)}
                   >
                     <div className="w-full">
-                      <p
+                      <div
                         className={cn(
                           "text-[13px] sm:text-[14px] text-left truncate",
-                          selectedConversation === item.id ? "text-foreground" : "text-muted-foreground",
+                          currentSessionId === item.id ? "text-foreground" : "text-muted-foreground",
                         )}
                       >
                         {item.title}
-                      </p>
-                      <p className="text-[11px] sm:text-[12px] text-muted-foreground mt-1 text-left truncate">
+                      </div>
+                      <div className="text-[11px] sm:text-[12px] text-muted-foreground mt-1 text-left truncate">
                         {item.timestamp}
-                      </p>
+                      </div>
                     </div>
+                    
+                    {/* Delete button */}
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="absolute right-1 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 hover:bg-destructive/10 hover:text-destructive transition-opacity"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        deleteSession(item.id);
+                      }}
+                    >
+                      <Trash size={14} weight="bold" />
+                    </Button>
                   </Button>
                 ))}
               </div>

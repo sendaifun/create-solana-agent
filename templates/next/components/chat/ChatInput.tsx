@@ -93,7 +93,10 @@ export function ChatInput({
                 <Toggle checked={isEnabled} onCheckedChange={setIsEnabled} aria-label="Auto sign toggle" />
               </div> */}
               <div className="mx-4 h-4 w-[1px] bg-border shrink-0" />
-              <div className="flex items-center gap-2 text-xs text-muted-foreground">
+              <div 
+                onClick={(e) => onSubmit(e)}
+                className="flex items-center gap-2 text-xs text-muted-foreground cursor-pointer hover:text-foreground transition-colors"
+              >
                 <kbd className="px-2 py-1 text-[11px] font-medium bg-muted rounded-md">⌘</kbd>
                 <ArrowRight size={16} weight="bold" className="text-muted-foreground" />
               </div>

@@ -29,6 +29,7 @@ import {
 } from "./icons";
 import { cn } from "@/lib/utils";
 import { useChatStore } from '@/store/useChatStore';
+import { ChatSession } from './ChatSession';
 
 const QUICK_SUGGESTIONS = [
   { text: "Launch a Memecoin", category: "NFTs", icon: Coin },
@@ -195,7 +196,11 @@ const SUGGESTIONS = [
   },
 ] as const;
 
-export function Chatcomp() {
+interface ChatcompProps {
+  sessionId?: number;
+}
+
+export function Chatcomp({ sessionId }: ChatcompProps) {
   const router = useRouter();
   const [input, setInput] = useState("");
   const [selectedMode, setSelectedMode] = useState(AGENT_MODES[0]);
@@ -203,20 +208,45 @@ export function Chatcomp() {
   const [selectedModel, setSelectedModel] = useState(MOCK_MODELS[0]);
   const [activeIntegrationCategory, setActiveIntegrationCategory] = useState<CategoryId>("all");
   const inputSectionRef = useRef<HTMLDivElement>(null);
-  const setInitialMessage = useChatStore((state: any) => state.setInitialMessage);
+  
+  const { addSession, addMessageToSession, getSessionById, setInitialMessage } = useChatStore();
+  const currentSession = sessionId ? getSessionById(sessionId) : null;
 
   const filteredIntegrations =
     activeIntegrationCategory === "all"
       ? SUGGESTIONS
       : SUGGESTIONS.filter((integration) => integration.category === activeIntegrationCategory);
 
+  if (sessionId) {
+    return <ChatSession />;
+  }
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!input.trim()) return;
-    setInitialMessage(input);
-    router.push('/chat/session');
+
+    try {
+      // Create session first
+      const newSession = addSession();
+      
+      // Add message and set initial message
+      await Promise.all([
+        addMessageToSession(newSession.id, {
+          role: 'user',
+          content: input
+        }),
+        setInitialMessage(input)
+      ]);
+
+      // Force navigation to new session
+      router.push(`/chat/${newSession.id}`);
+      router.refresh(); // Add this to force a refresh if needed
+    } catch (error) {
+      console.error('Navigation error:', error);
+    }
   };
 
+  // Landing page UI (existing code)
   return (
     <div className="flex flex-col items-center justify-center min-h-screen px-4 py-16 sm:py-32 scroll-smooth">
       <div className="w-full max-w-3xl flex flex-col gap-[10vh] sm:gap-[20vh] mt-[10vh] sm:mt-[20vh]">

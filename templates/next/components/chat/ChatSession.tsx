@@ -79,7 +79,7 @@ function AssistantMessage({ content }: AssistantMessageProps) {
                 <h3 className="text-lg font-bold my-2">{children}</h3>
               ),
               // Style paragraphs
-              p: ({ children }) => <p className="my-2">{children}</p>,
+              p: ({ children }) => <div className="my-2">{children}</div>,
               // Style links
               a: ({ children, href }) => (
                 <a 
