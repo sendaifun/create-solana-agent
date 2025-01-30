@@ -4,7 +4,7 @@ import { Input } from "@/components/ui/input";
 import { ArrowRight } from "@phosphor-icons/react";
 import * as React from "react";
 import { AGENT_MODES } from "./ModeSelector";
-import { DropdownComp } from "./WalletSelector";
+import { DropdownComp } from "./DropdownComp";
 
 export const MOCK_MODELS = [
   {

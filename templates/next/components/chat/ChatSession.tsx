@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect } from "react";
 import { ChatInput } from "./ChatInput";
 import { AGENT_MODES } from "./ModeSelector";
-import { MOCK_WALLETS } from "./WalletSelector";
+import { MOCK_WALLETS } from "./DropdownComp";
 import { AgentLogo } from "@/components/layout/AgentLogo";
 import { useSearchParams } from "next/navigation";
 import ReactMarkdown from 'react-markdown';
