@@ -1,13 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
-
 import { HumanMessage } from "@langchain/core/messages";
-import { initializeAgent } from "@/config/agent";
+import { getAgent } from "@/lib/solana-agent";
 
 export async function POST(req: NextRequest) {
   try {
     const { message } = await req.json();
-
-    const { agent, config } = await initializeAgent();
+    const { agent, config } = await getAgent();
 
     const stream = await agent.stream({ messages: [new HumanMessage(message)] }, config);
 

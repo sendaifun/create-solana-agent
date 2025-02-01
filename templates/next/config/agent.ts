@@ -24,7 +24,7 @@ export async function initializeAgent() {
 
   const tools = createSolanaTools(solanaAgent);
   const memory = new MemorySaver();
-  const config = { configurable: { thread_id: "Solana Agent Kit!" } };
+  const config = { configurable: { thread_id: "1" } };
 
   const agent = createReactAgent({
     llm,

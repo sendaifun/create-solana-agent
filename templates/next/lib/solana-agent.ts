@@ -1,7 +1,10 @@
-import { Tool } from "@langchain/core/tools";
+import { initializeAgent } from "@/config/agent";
 
-export async function initializeSolanaAgent(): Promise<Tool[]> {
-  // Return empty tools array for now
-  // We'll move the actual Solana Agent initialization to the client side
-  return [];
-}
+let agentInstance: Awaited<ReturnType<typeof initializeAgent>> | null = null;
+
+export async function getAgent() {
+  if (!agentInstance) {
+    agentInstance = await initializeAgent();
+  }
+  return agentInstance;
+} 
