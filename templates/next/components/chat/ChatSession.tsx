@@ -307,7 +307,7 @@ export function ChatSession({ sessionId, initialMessages }: ChatSessionProps) {
 				setMessages((prev) =>
 					prev.map((msg) =>
 						msg.id === assistantMessageId
-							? { ...msg, content: (msg.content + chunk).trim() }
+							? { ...msg, content: msg.content + chunk }
 							: msg,
 					),
 				);
