@@ -153,29 +153,83 @@ export function ChatSession({ sessionId, initialMessages }: ChatSessionProps) {
   const handleApiCall = async (message: string) => {
     setIsLoading(true);
     try {
+      // Add user message to local state first
+      const userMessage = {
+        id: String(Date.now()),
+        content: message,
+        role: 'user' as const,
+        timestamp: new Date()
+      };
+      setMessages(prev => [...prev, userMessage]);
+  
       const response = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message }),
+        body: JSON.stringify({
+          messages: [{
+            role: "user",
+            content: message
+          }]
+        }),
       });
-
+  
       if (!response.ok) throw new Error("Failed to get response");
-
-      const data = await response.json();
+  
+      // Create a new assistant message
+      const assistantMessageId = String(Date.now() + 1);
+      let fullContent = '';
       
-      // Add assistant message
+      // Initialize the assistant message
+      const initialAssistantMessage = {
+        id: assistantMessageId,
+        content: '',
+        role: 'assistant' as const,
+        timestamp: new Date()
+      };
+      setMessages(prev => [...prev, initialAssistantMessage]);
+  
+      // Process the stream
+      const reader = response.body?.getReader();
+      if (!reader) throw new Error("No readable stream available");
+  
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+  
+        const chunk = new TextDecoder().decode(value);
+        const matches = chunk.match(/0:"([^"]*)"|\[DONE\]/g);
+        if (matches) {
+          for (const match of matches) {
+            if (match === '[DONE]') continue;
+            const text = match.slice(3, -1);
+            fullContent += text;
+            
+            // Update messages with the new content
+            setMessages(prev => prev.map(msg => 
+              msg.id === assistantMessageId
+                ? { ...msg, content: fullContent }
+                : msg
+            ));
+          }
+        }
+      }
+  
+      // Add final messages to the chat store
+      addMessageToSession(sessionId, {
+        role: 'user',
+        content: message
+      });
       addMessageToSession(sessionId, {
         role: 'assistant',
-        content: data.response
+        content: fullContent
       });
-
-      // Refresh messages from store
-      const updatedSession = getSessionById(sessionId);
-      if (updatedSession?.messages) {
-        setMessages(updatedSession.messages);
-      }
+  
     } catch (error) {
       console.error("Error:", error);
+      addMessageToSession(sessionId, {
+        role: 'assistant',
+        content: 'Sorry, there was an error processing your request.'
+      });
     } finally {
       setIsLoading(false);
     }
@@ -186,14 +240,16 @@ export function ChatSession({ sessionId, initialMessages }: ChatSessionProps) {
     if (!input.trim()) return;
     setIsLoading(true);
 
-    // Add user message
-    const userMessage: Message = {
+    // Create user message
+    const userMessage = {
       id: String(Date.now()),
       content: input,
-      role: "user",
+      role: 'user' as const,
       timestamp: new Date()
     };
 
+    // Update both local state and store
+    setMessages(prev => [...prev, userMessage]);
     addMessageToSession(sessionId, {
       role: 'user',
       content: input
@@ -204,26 +260,73 @@ export function ChatSession({ sessionId, initialMessages }: ChatSessionProps) {
       const response = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: input }),
+        body: JSON.stringify({
+          messages: [{
+            role: "user",
+            content: input
+          }]
+        }),
       });
-
+      setIsLoading(false);
       if (!response.ok) throw new Error("Failed to get response");
 
-      const data = await response.json();
+      // Create a new assistant message with empty content
+      const assistantMessageId = String(Date.now() + 1);
+      let fullContent = '';
       
-      // Add assistant message
+      // Initialize the assistant message in local state
+      const initialMessage = {
+        id: assistantMessageId,
+        role: 'assistant' as const,
+        content: '',
+        timestamp: new Date()
+      };
+      setMessages(prev => [...prev, initialMessage]);
+
+      // Process the stream
+      const reader = response.body?.getReader();
+      if (!reader) throw new Error("No readable stream available");
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+
+        const chunk = new TextDecoder().decode(value);
+        const matches = chunk.match(/0:"([^"]*)"|\[DONE\]/g);
+        if (matches) {
+          for (const match of matches) {
+            if (match === '[DONE]') continue;
+            const text = match.slice(3, -1);
+            fullContent += text;
+            
+            // Update local state with new content
+            setMessages(prev => prev.map(msg => 
+              msg.id === assistantMessageId
+                ? { ...msg, content: fullContent }
+                : msg
+            ));
+          }
+        }
+      }
+      // Add final assistant message to store
       addMessageToSession(sessionId, {
         role: 'assistant',
-        content: data.response
+        content: fullContent
       });
 
-      // Refresh messages from store
-      const updatedSession = getSessionById(sessionId);
-      if (updatedSession?.messages) {
-        setMessages(updatedSession.messages);
-      }
     } catch (error) {
       console.error("Error:", error);
+      const errorMessage = {
+        id: String(Date.now() + 2),
+        role: 'assistant' as const,
+        content: 'Sorry, there was an error processing your request.',
+        timestamp: new Date()
+      };
+      setMessages(prev => [...prev, errorMessage]);
+      addMessageToSession(sessionId, {
+        role: 'assistant',
+        content: 'Sorry, there was an error processing your request.'
+      });
     } finally {
       setIsLoading(false);
     }

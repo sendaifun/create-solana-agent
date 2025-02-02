@@ -1,28 +1,49 @@
-import { NextRequest, NextResponse } from "next/server";
-import { HumanMessage } from "@langchain/core/messages";
+import { StreamingTextResponse, OpenAIStream } from "ai";
 import { getAgent } from "@/lib/solana-agent";
+import OpenAI from "openai";
 
-export async function POST(req: NextRequest) {
-  try {
-    const { message } = await req.json();
-    const { agent, config } = await getAgent();
+const openai = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY!,
+});
 
-    const stream = await agent.stream({ messages: [new HumanMessage(message)] }, config);
+export async function POST(req: Request) {
+  const { messages = [] } = await req.json();
+  const { tools } = await getAgent();
 
-    let response = "";
-
-    for await (const chunk of stream) {
-      console.log("chunk", chunk);
-      if ("agent" in chunk) {
-        console.log("Chunk Agent", chunk.agent);
-        console.log("chunk.agent.messages[0].content", chunk.agent.messages[0].content);
-        response += chunk.agent.messages[0].content + "\n";
-      }
-    }
-
-    return NextResponse.json({ response });
-  } catch (error) {
-    console.error("Error:", error);
-    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
+  if (!Array.isArray(messages)) {
+    return new Response(JSON.stringify({ error: "Messages must be an array" }), {
+      status: 400,
+      headers: { "Content-Type": "application/json" },
+    });
   }
+
+  const response = await openai.chat.completions.create({
+    model: "gpt-4o-mini",
+    temperature: 0.7,
+    stream: true,
+    messages: [
+      {
+        role: "system",
+        content: `You are a helpful agent that can interact onchain using the Solana Agent Kit. You are
+        empowered to interact onchain using your tools. If you ever need funds, you can request them from the
+        faucet. If not, you can provide your wallet details and request funds from the user. If there is a 5XX
+        (internal) HTTP error code, ask the user to try again later. If someone asks you to do something you
+        can't do with your currently available tools, you must say so, and encourage them to implement it
+        themselves using the Solana Agent Kit, recommend they go to https://www.solanaagentkit.xyz for more information. Be
+        concise and helpful with your responses.`,
+      },
+      ...messages,
+    ],
+    tools: tools.map((tool) => ({
+      type: "function" as const,
+      function: {
+        name: tool.name,
+        description: tool.description,
+        parameters: tool.metadata,
+      },
+    })),
+  });
+
+  const stream = OpenAIStream(response);
+  return new StreamingTextResponse(stream);
 }
