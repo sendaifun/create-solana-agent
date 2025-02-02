@@ -17,24 +17,38 @@ npx create-solana-agent@latest
   - Next 15
   - TypeScript
   - Tailwind CSS
+  - Shadcn UI
   - Solana Agent Kit
 
 ## Project Structure
 
 ```
-solana-agent-terminal/
-├── app/
-│   ├── api/
-│   │   └── chat/
-│   │       └── route.ts      # Chat API endpoint
-│   ├── layout.tsx            # Root layout with providers
-│   └── page.tsx              # Main chat interface
-├── components/
-│   └── ui/                   # Reusable UI components
-├── lib/
-│   └── utils.ts              # Utility functions
-└── public/
-    └── fonts/               # Custom fonts
+template/
+│   └── next
+│       ├── app
+│       │   ├── api
+│       │   │   └── chat
+│       │   │       └── route.ts
+│       │   ├── chat
+│       │   │   ├── [sessionId]
+│       │   │   │   └── page.tsx
+│       │   │   └── session
+│       │   │       └── page.tsx
+│       │   ├── layout.tsx
+│       │   └── page.tsx
+│       ├── components
+│       │   ├── chat
+│       │   ├── layout
+│       │   └── ui
+│       ├── config
+│       │   ├── agent.ts
+│       │   └── history.ts
+│       ├── lib
+│       │   ├── client
+│       │   │   └── chat-api.ts
+│       │   ├── solana-agent.ts
+│       ├── store
+│       │   └── useChatStore.ts
 ```
 
 ## Development
@@ -53,13 +67,13 @@ solana-agent-terminal/
 
 2. Install dependencies:
    ```bash
-   cd my-chat-app
-   npm install
+   cd solana-agent-terminal
+   pnpm install
    ```
 
 3. Start the development server:
    ```bash
-   npm run dev
+   pnpm run dev
    ```
 
 ## Customization
@@ -103,6 +117,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ### Q: Can I use this in production?
 A: Yes! The template is production-ready, but make sure to:
 - Use appropriate environment variables
+- Setup UI components based on your Frontend requirements 
 - Set up proper error handling
 - Configure your Solana RPC endpoint
 
