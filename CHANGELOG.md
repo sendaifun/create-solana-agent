@@ -1,5 +1,33 @@
 # Changelog
 
+## [1.3.0] - 2024-02-03
+
+### Added
+- Vercel AI SDK for agent initialization
+- Deepseek Provider
+
+### Features
+- Switched from Langchain to Vercel AI SDK 
+
+### Technical Details
+- Integrated createVercelAITools instead of Langchain
+- New `useChat` hook from AI SDK
+- stream.toTextStreamResponse instead of String
+
+### Fixed
+- User's Chat Message hide Bug
+- Reduced the dependencies of Chat messages throughout
+- Added Text Stream
+- More Markdown Support 
+
+
+### Dependencies Added
+- @ai-sdk/deepseek
+- @ai-sdk/openai
+- ai
+- openai
+- react-markdown
+
 ## [1.2.0] - 2024-01-30
 
 ### Added
