@@ -1,9 +1,10 @@
-import { streamText } from "ai";
-import { createOpenAI } from "@ai-sdk/openai";
 import { getAgent } from "@/lib/solana-agent";
+import { createDeepSeek } from '@ai-sdk/deepseek';
+import { createOpenAI } from "@ai-sdk/openai";
+import { streamText } from "ai";
 
 export async function POST(req: Request) {
-	const { messages = [] } = await req.json();
+	const { messages = [], selectedModel } = await req.json();
 	const { tools } = await getAgent();
 
 	if (!Array.isArray(messages)) {
@@ -20,8 +21,12 @@ export async function POST(req: Request) {
 		apiKey: process.env.OPENAI_API_KEY,
 	});
 
+	const deepseek = createDeepSeek({
+		apiKey: process.env.DEEPSEEK_API_KEY,
+	});
+
 	const stream = streamText({
-		model: openai("gpt-4o"),
+		model: selectedModel?.name.includes("DeepSeek") ? deepseek("deepseek-chat") : openai("gpt-4"),
 		tools: tools,
 		system: `You are a helpful agent that can interact onchain using the Solana Agent Kit. You are
         empowered to interact onchain using your tools. If you ever need funds, you can request them from the

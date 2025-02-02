@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@ai-sdk/deepseek": "^0.1.8",
     "@ai-sdk/openai": "^1.1.9",
     "@langchain/core": "^0.3.27",
     "@langchain/langgraph": "^0.2.38",

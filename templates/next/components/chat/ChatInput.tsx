@@ -40,7 +40,7 @@ type Item = {
 interface ChatInputProps {
   input: string;
   setInput: (value: string) => void;
-  onSubmit: (e: React.FormEvent) => void;
+  onSubmit: (e: React.FormEvent, selectedModel: Item) => void;
   selectedMode: (typeof AGENT_MODES)[0];
   setSelectedMode: (mode: (typeof AGENT_MODES)[0]) => void;
   selectedModel: Item;
@@ -62,8 +62,13 @@ export function ChatInput({
 }: ChatInputProps) {
   const [isEnabled, setIsEnabled] = React.useState(false);
 
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    onSubmit(e, selectedModel);
+  };
+
   return (
-    <form onSubmit={onSubmit}>
+    <form onSubmit={handleSubmit}>
       <div className="relative rounded-2xl bg-card/90 backdrop-blur-xl shadow-sm transition-all duration-200">
         <div className="flex flex-col">
           <div className="relative flex items-center min-h-[72px]">
@@ -94,7 +99,7 @@ export function ChatInput({
               </div> */}
               <div className="mx-4 h-4 w-[1px] bg-border shrink-0" />
               <div 
-                onClick={(e) => onSubmit(e)}
+                onClick={handleSubmit}
                 className="flex items-center gap-2 text-xs text-muted-foreground cursor-pointer hover:text-foreground transition-colors"
               >
                 <kbd className="px-2 py-1 text-[11px] font-medium bg-muted rounded-md">⌘</kbd>
