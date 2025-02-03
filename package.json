@@ -6,12 +6,16 @@
   "scripts": {
     "dev": "ts-node src/bin/index.ts",
     "clean": "rm -rf dist",
-    "build": "npm run clean && tsc"
+    "build": "npm run clean && tsc",
+    "prepare": "npm run build"
   },
   "type": "module",
   "bin": {
     "create-solana-agent": "./dist/bin/index.js"
   },
+  "files": [
+    "dist"
+  ],
   "keywords": [
     "solana",
     "ai",
