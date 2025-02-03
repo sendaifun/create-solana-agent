@@ -14,7 +14,8 @@
     "create-solana-agent": "./dist/bin/index.js"
   },
   "files": [
-    "dist"
+    "dist",
+    "templates"
   ],
   "keywords": [
     "solana",
