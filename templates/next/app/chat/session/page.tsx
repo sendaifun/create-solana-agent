@@ -7,7 +7,7 @@ export default function ChatSessionPage() {
   return (
     <div className="flex flex-col h-full">
       <Suspense fallback={<div>Loading...</div>}>
-        <ChatSession />
+        <ChatSession sessionId={1} initialMessages={[]} />
       </Suspense>
     </div>
   );

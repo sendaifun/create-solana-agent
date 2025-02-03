@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "ts-node src/bin/index.ts",
     "clean": "rm -rf dist",
-    "build": "npm run clean && tsc",
+    "build": "npm run clean && tsc && chmod +x dist/bin/index.js",
     "prepare": "npm run build"
   },
   "type": "module",

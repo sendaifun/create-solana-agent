@@ -6,6 +6,7 @@ import { useEffect, useRef, useState } from "react";
 import ReactMarkdown from "react-markdown";
 import { ChatInput, MOCK_MODELS, MOCK_WALLETS } from "./ChatInput";
 import { AGENT_MODES } from "./ModeSelector";
+import Image from "next/image";
 
 interface Message {
 	id: string;
@@ -101,9 +102,11 @@ function AssistantMessage({ content }: AssistantMessageProps) {
 							),
 							// Add custom image component
 							img: ({ src, alt }) => (
-								<img
-									src={src}
-									alt={alt}
+								<Image
+									src={src || ""}
+									alt={alt || ""}
+									width={100}
+									height={100}
 									className="max-w-full h-auto max-h-[150px] object-contain my-2 rounded-lg"
 								/>
 							),
