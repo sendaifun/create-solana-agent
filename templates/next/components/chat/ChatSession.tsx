@@ -126,13 +126,12 @@ export function ChatSession({ sessionId, initialMessages }: ChatSessionProps) {
 	const [input, setInput] = useState("");
 	const messagesEndRef = useRef<HTMLDivElement>(null);
 	const apiCallMade = useRef(false);
-	const { addMessageToSession, getSessionById } = useChatStore();
+	const { addMessageToSession, getSessionById, setCurrentSessionModalName } =
+		useChatStore();
 	const [selectedMode, setSelectedMode] = useState(AGENT_MODES[0]);
 	const [selectedWallet, setSelectedWallet] = useState(MOCK_WALLETS[0]);
-	const [selectedModel, setSelectedModel] = useState(MOCK_MODELS[0]);
-
-	const chatStoreInitialMessage = useChatStore(
-		(state: any) => state.initialMessage,
+	const [selectedModel, setSelectedModel] = useState(
+		getSessionById(sessionId)?.model ?? MOCK_MODELS[0],
 	);
 
 	const scrollToBottom = () => {
@@ -145,6 +144,7 @@ export function ChatSession({ sessionId, initialMessages }: ChatSessionProps) {
 
 	useEffect(() => {
 		const session = getSessionById(sessionId);
+
 		if (session?.messages) {
 			setMessages(session.messages);
 
@@ -176,7 +176,7 @@ export function ChatSession({ sessionId, initialMessages }: ChatSessionProps) {
 				method: "POST",
 				headers: { "Content-Type": "application/json" },
 				body: JSON.stringify({
-          selectedModel,
+					selectedModel,
 					messages: [
 						{
 							role: "user",
@@ -185,6 +185,7 @@ export function ChatSession({ sessionId, initialMessages }: ChatSessionProps) {
 					],
 				}),
 			});
+			setIsLoading(false);
 
 			if (!response.ok) throw new Error("Failed to get response");
 
@@ -210,23 +211,14 @@ export function ChatSession({ sessionId, initialMessages }: ChatSessionProps) {
 				if (done) break;
 
 				const chunk = new TextDecoder().decode(value);
-				const matches = chunk.match(/0:"([^"]*)"|\[DONE\]/g);
-				if (matches) {
-					for (const match of matches) {
-						if (match === "[DONE]") continue;
-						const text = match.slice(3, -1);
-						fullContent += text;
-
-						// Update messages with the new content
-						setMessages((prev) =>
-							prev.map((msg) =>
-								msg.id === assistantMessageId
-									? { ...msg, content: fullContent }
-									: msg,
-							),
-						);
-					}
-				}
+				fullContent += chunk;
+				setMessages((prev) =>
+					prev.map((msg) =>
+						msg.id === assistantMessageId
+							? { ...msg, content: fullContent }
+							: msg,
+					),
+				);
 			}
 
 			// Add final messages to the chat store
@@ -275,8 +267,9 @@ export function ChatSession({ sessionId, initialMessages }: ChatSessionProps) {
 				method: "POST",
 				headers: { "Content-Type": "application/json" },
 				body: JSON.stringify({
-          selectedModel,
+					selectedModel,
 					messages: [
+						...messages,
 						{
 							role: "user",
 							content: input,
@@ -309,10 +302,11 @@ export function ChatSession({ sessionId, initialMessages }: ChatSessionProps) {
 				if (done) break;
 
 				const chunk = new TextDecoder().decode(value);
+				fullContent += chunk;
 				setMessages((prev) =>
 					prev.map((msg) =>
 						msg.id === assistantMessageId
-							? { ...msg, content: msg.content + chunk }
+							? { ...msg, content: fullContent }
 							: msg,
 					),
 				);
@@ -382,7 +376,10 @@ export function ChatSession({ sessionId, initialMessages }: ChatSessionProps) {
 						selectedWallet={selectedWallet}
 						setSelectedWallet={setSelectedWallet}
 						selectedModel={selectedModel}
-						setSelectedModel={setSelectedModel}
+						setSelectedModel={(model) => {
+							setCurrentSessionModalName(sessionId, model);
+							setSelectedModel(model);
+						}}
 					/>
 				</div>
 			</div>
