@@ -175,9 +175,9 @@ export default function SideNav() {
 								</div>
 							</div>
 							<div className="px-3 space-y-1">
-								{sessions.map((item) => (
+								{sessions.map((item, index) => (
 									<Button
-										key={item.id}
+										key={index}
 										variant="ghost"
 										className={cn(
 											"group flex flex-col items-start w-full px-2 sm:px-3 py-2 sm:py-2.5 h-auto",

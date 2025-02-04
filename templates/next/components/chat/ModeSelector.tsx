@@ -42,9 +42,9 @@ export function ModeSelector({ selectedMode, onModeChange }: ModeSelectorProps) 
         </button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="start" className="w-64 p-1 bg-popover border border-border">
-        {AGENT_MODES.map((mode) => (
+        {AGENT_MODES.map((mode,index) => (
           <DropdownMenuItem
-            key={mode.title}
+            key={index} 
             onClick={() => onModeChange(mode)}
             className={cn(
               "flex items-center gap-2 px-2 py-2 rounded-md text-sm",

@@ -40,9 +40,9 @@ export function DropdownComp({ selectedItems, onItemsChange, items }: DropdownCo
         </button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="start" className="w-64 p-1 bg-popover border border-border">
-        {items?.map((item) => (
+        {items?.map((item,index) => (
           <DropdownMenuItem
-            key={item.subTxt}
+            key={index}
             onClick={() => onItemsChange(item)}
             className={cn(
               "flex items-center gap-2 px-2 py-2 rounded-md",

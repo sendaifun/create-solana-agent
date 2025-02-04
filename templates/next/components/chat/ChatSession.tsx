@@ -339,8 +339,8 @@ export function ChatSession({ sessionId, initialMessages }: ChatSessionProps) {
 			{/* Messages */}
 			<div className="flex-1 overflow-y-auto p-4 pb-32 scroll-smooth scrollbar-none [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none]">
 				<div className="max-w-3xl mx-auto w-full space-y-6">
-					{messages.map((message) => (
-						<div key={message.id}>
+					{messages.map((message, index) => (
+						<div key={index}>
 							{message.role === "user" ? (
 								<UserMessage content={message.content} />
 							) : (

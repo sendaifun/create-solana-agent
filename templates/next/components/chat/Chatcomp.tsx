@@ -313,9 +313,9 @@ export function Chatcomp({ sessionId }: ChatcompProps) {
 							</span>
 						</div>
 						<div className="flex gap-2 flex-wrap">
-							{CATEGORIES.map((category) => (
+							{CATEGORIES.map((category, index) => (
 								<button
-									key={category.id}
+									key={index}
 									onClick={() => setActiveIntegrationCategory(category.id)}
 									className={cn(
 										"px-3 py-1 text-sm font-medium rounded-full transition-colors",
