@@ -1,0 +1,11 @@
+.env
+.env.local
+.env.example
+node_modules
+.next
+
+package-lock.json
+pnpm-lock.yaml
+
+# Exclude the .env file in the templates folder
+templates/next/.env
