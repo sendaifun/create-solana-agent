@@ -186,25 +186,26 @@ export function ChatSession({ sessionId, initialMessages }: ChatSessionProps) {
     if (!input.trim()) return;
     setIsLoading(true);
 
-    // Add user message
-    const userMessage: Message = {
-      id: String(Date.now()),
-      content: input,
-      role: "user",
-      timestamp: new Date()
-    };
-
+    // Add user message and update messages state immediately
     addMessageToSession(sessionId, {
       role: 'user',
       content: input
     });
+    
+    // Refresh messages from store right away to show user message
+    const updatedSession = getSessionById(sessionId);
+    if (updatedSession?.messages) {
+      setMessages(updatedSession.messages);
+    }
+
+    const currentInput = input; // Store input before clearing
     setInput("");
 
     try {
       const response = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: input }),
+        body: JSON.stringify({ message: currentInput }), // Use stored input
       });
 
       if (!response.ok) throw new Error("Failed to get response");
