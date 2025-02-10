@@ -4,7 +4,7 @@ import { AgentLogo } from "@/components/layout/AgentLogo";
 import { useChatStore } from '@/store/useChatStore';
 import { useEffect, useRef, useState } from "react";
 import ReactMarkdown from 'react-markdown';
-import { ChatInput, MOCK_MODELS, MOCK_WALLETS } from "./ChatInput";
+import { ChatInput, MOCK_MODELS } from "./ChatInput";
 import { AGENT_MODES } from "./ModeSelector";
 
 interface Message {
@@ -28,7 +28,7 @@ function UserMessage({ content }: UserMessageProps) {
     <div className="flex justify-end">
       <div className="max-w-[85%]">
         <div className="px-4 py-3 text-[15px] tracking-[-0.01em] leading-[1.65] font-medium rounded-2xl bg-accent/10 text-accent rounded-br-sm">
-          <div className="whitespace-pre-wrap">{content}</div>
+          <div className="whitespace-pre-wrap break-words">{content}</div>
         </div>
       </div>
     </div>
@@ -122,7 +122,11 @@ export function ChatSession({ sessionId, initialMessages }: ChatSessionProps) {
   const apiCallMade = useRef(false);
   const { addMessageToSession, getSessionById } = useChatStore();
   const [selectedMode, setSelectedMode] = useState(AGENT_MODES[0]);
-  const [selectedWallet, setSelectedWallet] = useState(MOCK_WALLETS[0]);
+  const [wallets, setWallets] = useState([{
+    name: "Default Agent Wallet",
+    subTxt: "AgN7....3Pda",
+  }]);
+  const [selectedWallet, setSelectedWallet] = useState(wallets[0]);
   const [selectedModel, setSelectedModel] = useState(MOCK_MODELS[0]);
 
   const chatStoreInitialMessage = useChatStore((state: any) => state.initialMessage);
@@ -136,6 +140,11 @@ export function ChatSession({ sessionId, initialMessages }: ChatSessionProps) {
   }, [messages]);
 
   useEffect(() => {
+    fetch("/api/wallet")
+      .then((res) => res.json())
+      .then((data) => {
+        setWallets(data.wallets);
+      });
     const session = getSessionById(sessionId);
     if (session?.messages) {
       setMessages(session.messages);

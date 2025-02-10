@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import {
 	Coin,
@@ -9,7 +9,7 @@ import {
 	ArrowsLeftRight,
 } from "@phosphor-icons/react";
 import { AGENT_MODES } from "./ModeSelector";
-import { MOCK_WALLETS, MOCK_MODELS } from "./ChatInput";
+import { MOCK_MODELS } from "./ChatInput";
 import { IntegrationCard } from "./IntegrationCard";
 import { ChatInput } from "./ChatInput";
 import {
@@ -210,7 +210,11 @@ export function Chatcomp({ sessionId }: ChatcompProps) {
 	const router = useRouter();
 	const [input, setInput] = useState("");
 	const [selectedMode, setSelectedMode] = useState(AGENT_MODES[0]);
-	const [selectedWallet, setSelectedWallet] = useState(MOCK_WALLETS[0]);
+	const [wallets, setWallets] = useState([{
+		name: "Default Agent Wallet",
+		subTxt: "AgN7....3Pda",
+	}]);
+	const [selectedWallet, setSelectedWallet] = useState(wallets[0]);
 	const [selectedModel, setSelectedModel] = useState(MOCK_MODELS[0]);
 	const [activeIntegrationCategory, setActiveIntegrationCategory] =
 		useState<CategoryId>("all");
@@ -250,6 +254,14 @@ export function Chatcomp({ sessionId }: ChatcompProps) {
 			console.error("Navigation error:", error);
 		}
 	};
+
+	useEffect(() => {
+		fetch("/api/wallet")
+			.then((res) => res.json())
+			.then((data) => {
+				setWallets(data.wallets);
+			});
+	}, []);
 
 	// Landing page UI (existing code)
 	return (

@@ -5,31 +5,16 @@ import { ArrowRight } from "@phosphor-icons/react";
 import * as React from "react";
 import { AGENT_MODES } from "./ModeSelector";
 import { DropdownComp } from "./WalletSelector";
-
+import { useEffect, useState } from "react";
 export const MOCK_MODELS = [
-  {
-    name: "DeepSeek",
-    subTxt: "DeepSeek-V3 Base",
-  },
   {
     name: "OpenAI",
     subTxt: "GPT-4o-mini",
   },
-];
-
-export const MOCK_WALLETS = [
   {
-    name: "Default Agent Wallet",
-    subTxt: "AgN7....3Pda",
-  },
-  {
-    name: "Secondary Wallet",
-    subTxt: "BhK9....8Omx",
-  },
-  {
-    name: "Test Wallet",
-    subTxt: "CpL5....28wy",
-  },
+    name: "DeepSeek",
+    subTxt: "DeepSeek-V3 Base",
+  }
 ];
 
 type Item = {
@@ -61,7 +46,18 @@ export function ChatInput({
   setSelectedWallet,
 }: ChatInputProps) {
   const [isEnabled, setIsEnabled] = React.useState(false);
+  const [wallets, setWallets] = useState([{
+    name: "Default Agent Wallet",
+    subTxt: "",
+  }]);
 
+  useEffect(() => {
+    fetch("/api/wallet")
+      .then((res) => res.json())
+      .then((data) => {
+        setWallets(data.wallets);
+      });
+  }, []);
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     onSubmit(e, selectedModel);
@@ -87,7 +83,7 @@ export function ChatInput({
                 {/* You can use the ModeSelector component if you want to use the default mode selector UI */}
                 {/* <ModeSelector selectedMode={selectedMode} onModeChange={setSelectedMode} /> */}
                 <div className="mx-4 h-4 w-[1px] bg-border shrink-0" />
-                <DropdownComp selectedItems={selectedWallet} onItemsChange={setSelectedWallet} items={MOCK_WALLETS} />
+                <DropdownComp selectedItems={selectedWallet} onItemsChange={setSelectedWallet} items={wallets} />
               </div>
             </div>
             <div className="ml-auto flex items-center">

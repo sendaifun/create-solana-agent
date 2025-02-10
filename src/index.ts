@@ -81,12 +81,12 @@ export async function main(argv: string[]) {
         }),
       openaiApiKey: () =>
         p.text({
-          message: "OpenAI API Key:",
+          message: "DeepSeek or OpenAI API Key:",
           placeholder: "sk-...",
           defaultValue: "",
           validate(value) {
             if (!value) {
-              return "OpenAI API Key is required";
+              return "DeepSeek or OpenAI API Key is required";
             }
           },
         }),

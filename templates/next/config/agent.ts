@@ -1,25 +1,3 @@
-// Vercel AI SDK : 
-// import { SolanaAgentKit, createVercelAITools } from "solana-agent-kit";
-// import { validateEnvironment } from "@/lib/utils";
-
-// export async function initializeAgent() {
-// 	validateEnvironment();
-
-// 	const solanaAgent = new SolanaAgentKit(
-// 		process.env.SOLANA_PRIVATE_KEY!,
-// 		process.env.RPC_URL!,
-// 		{
-// 			OPENAI_API_KEY: process.env.OPENAI_API_KEY!,
-// 		},
-// 	);
-
-// 	const tools = createVercelAITools(solanaAgent);
-
-// 	return { tools };
-// }
-
-
-// Langchain : 
 import { MemorySaver } from "@langchain/langgraph";
 import { createReactAgent } from "@langchain/langgraph/prebuilt";
 import { ChatOpenAI } from "@langchain/openai";
@@ -29,8 +7,8 @@ import { createSolanaTools } from "solana-agent-kit";
 
 export async function initializeAgent() {
   const llm = new ChatOpenAI({
-    modelName: "gpt-4o-mini",
-    temperature: 0.7,
+    modelName: "gpt-4o",
+    temperature: 0.3,
   });
 
   validateEnvironment();
@@ -39,7 +17,7 @@ export async function initializeAgent() {
     process.env.SOLANA_PRIVATE_KEY!,
     process.env.RPC_URL!,
     {
-      OPENAI_API_KEY: process.env.OPENAI_API_KEY!,
+      OPENAI_API_KEY: "",
     },
   );
 
