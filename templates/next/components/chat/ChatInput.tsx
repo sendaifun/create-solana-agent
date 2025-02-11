@@ -60,7 +60,9 @@ export function ChatInput({
   }, []);
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSubmit(e, selectedModel);
+    if (input.trim()) {
+      onSubmit(e, selectedModel);
+    }
   };
 
   return (

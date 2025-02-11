@@ -4,23 +4,26 @@ import { ChatOpenAI } from "@langchain/openai";
 import { validateEnvironment } from "@/lib/utils";
 import { SolanaAgentKit } from "solana-agent-kit";
 import { createSolanaTools } from "solana-agent-kit";
+import { ChatDeepSeek } from "@langchain/deepseek";
 
-export async function initializeAgent() {
-  const llm = new ChatOpenAI({
-    modelName: "gpt-4o",
-    temperature: 0.3,
-  });
+export async function initializeAgent(modelName: string) {
+  const llm = modelName?.includes("OpenAI") 
+    ? new ChatOpenAI({
+        modelName: "gpt-4o",
+        temperature: 0.3,
+      })
+    : new ChatDeepSeek({
+        model: "deepseek-reasoner",
+        temperature: 0,
+      });
 
   validateEnvironment();
 
-  const solanaAgent = new SolanaAgentKit(
-    process.env.SOLANA_PRIVATE_KEY!,
-    process.env.RPC_URL!,
-    {
-      OPENAI_API_KEY: "",
-    },
-  );
+  const solanaAgent = new SolanaAgentKit(process.env.SOLANA_PRIVATE_KEY!, process.env.RPC_URL!, {
+    OPENAI_API_KEY: "",
+  });
 
+  console.log("llm", llm);
   const tools = createSolanaTools(solanaAgent);
   const memory = new MemorySaver();
   const config = { configurable: { thread_id: "1" } };

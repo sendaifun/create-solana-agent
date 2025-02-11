@@ -6,8 +6,9 @@ import bs58 from "bs58";
 
 export async function POST(req: NextRequest) {
   try {
-    const { message } = await req.json();
-    const { agent, config } = await getAgent();
+    const { message, modelName } = await req.json();
+    console.log("modelName", modelName);
+    const { agent, config } = await getAgent(modelName);
 
     const messages = [
       new HumanMessage({
