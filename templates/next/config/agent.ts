@@ -11,19 +11,22 @@ export async function initializeAgent(modelName: string) {
     ? new ChatOpenAI({
         modelName: "gpt-4o",
         temperature: 0.3,
+        apiKey: process.env.OPENAI_API_KEY!,
       })
     : new ChatDeepSeek({
         model: "deepseek-reasoner",
         temperature: 0,
+        apiKey: process.env.DEEPSEEK_API_KEY!,
       });
 
   validateEnvironment();
 
+  console.log("llm", llm);
+
   const solanaAgent = new SolanaAgentKit(process.env.SOLANA_PRIVATE_KEY!, process.env.RPC_URL!, {
-    OPENAI_API_KEY: "",
+    OPENAI_API_KEY: process.env.OPENAI_API_KEY!,
   });
 
-  console.log("llm", llm);
   const tools = createSolanaTools(solanaAgent);
   const memory = new MemorySaver();
   const config = { configurable: { thread_id: "1" } };
