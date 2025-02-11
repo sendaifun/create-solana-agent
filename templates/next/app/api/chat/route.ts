@@ -22,8 +22,10 @@ export async function POST(req: NextRequest) {
 
     for await (const chunk of stream) {
       if ("agent" in chunk) {
+        // console.log("chunk.agent", chunk.agent);
         response += chunk.agent.messages[0].content + "\n";
       } else if ("tools" in chunk) {
+        // console.log("chunk.tools", chunk.tools);
         console.log(chunk.tools.messages[0].content);
       }
     }

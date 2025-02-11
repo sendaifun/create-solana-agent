@@ -12,6 +12,7 @@
     "@ai-sdk/deepseek": "^0.1.8",
     "@ai-sdk/openai": "^1.1.9",
     "@langchain/core": "^0.3.27",
+    "@langchain/deepseek": "^0.0.1",
     "@langchain/langgraph": "^0.2.38",
     "@langchain/openai": "^0.3.16",
     "@phosphor-icons/react": "^2.1.7",
