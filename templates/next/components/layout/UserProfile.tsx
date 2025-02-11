@@ -25,12 +25,12 @@ export const UserProfile = ({ isExpanded }: UserProfileProps) => {
       )}
     >
       <div className="min-w-10 min-h-10 rounded-full bg-muted/80 flex items-center justify-center text-[15px] font-medium text-foreground">
-        YA
+        SA
       </div>
       {(isExpanded || (!isExpanded && window.innerWidth < 768)) && (
         <>
           <div className="flex-1 min-w-0">
-            <div className="text-[15px] font-medium text-foreground truncate">Yash Agarwal</div>
+            <div className="text-[15px] font-medium text-foreground truncate">SEND AGENT</div>
             <div className="text-[13px] text-muted-foreground">Pro</div>
           </div>
           <Button variant="ghostNoBackground" size="icon" onClick={toggleTheme} className="hover:bg-muted/50">
