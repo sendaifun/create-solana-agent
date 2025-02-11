@@ -1,4 +1,15 @@
+<div align="center">
+
 # create-solana-agent
+
+![Create Solana Agent](./public/banner.png)
+
+[![npm version](https://img.shields.io/npm/v/create-solana-agent.svg)](https://www.npmjs.com/package/create-solana-agent)
+[![npm downloads](https://img.shields.io/npm/dm/create-solana-agent.svg)](https://www.npmjs.com/package/create-solana-agent)
+[![License](https://img.shields.io/npm/l/create-solana-agent.svg)](https://github.com/sendaifun/create-solana-agent/blob/main/LICENSE)
+
+
+</div>
 
 :zap: Get up and running fast with Solana agents :zap:
 
