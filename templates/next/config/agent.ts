@@ -14,7 +14,7 @@ export async function initializeAgent(modelName: string) {
         apiKey: process.env.OPENAI_API_KEY!,
       })
     : new ChatDeepSeek({
-        model: "deepseek-reasoner",
+        model: "deepseek-chat",
         temperature: 0,
         apiKey: process.env.DEEPSEEK_API_KEY!,
       });
