@@ -79,14 +79,23 @@ export async function main(argv: string[]) {
             }
           },
         }),
-      openaiApiKey: () =>
+      model: () =>
+        p.select({
+          message: "Choose your AI model:",
+          options: [
+            { value: "claude-sonnet", label: "Claude Sonnet"},
+            { value: "gpt-4", label: "GPT-4" },
+            { value: "deepseek-chat", label: "DeepSeek Chat" },
+          ],
+        }),
+      apiKey: (results) =>
         p.text({
-          message: "DeepSeek or OpenAI API Key:",
+          message: `${results.results.model === "claude-sonnet" ? "Anthropic" : results.results.model === "gpt-4" ? "OpenAI" : "DeepSeek"} API Key:`,
           placeholder: "sk-...",
           defaultValue: "",
           validate(value) {
             if (!value) {
-              return "DeepSeek or OpenAI API Key is required";
+              return "API Key is required";
             }
           },
         }),
@@ -110,7 +119,7 @@ export async function main(argv: string[]) {
     },
   );
 
-  const { projectName, rpcURL, openaiApiKey, solanaPrivateKey } = group;
+  const { projectName, rpcURL, model, apiKey, solanaPrivateKey } = group;
 
   const finalProjectName = projectName || defaultProjectName;
   const finalRpcURL = rpcURL || defaultRpcURL;
@@ -128,9 +137,13 @@ export async function main(argv: string[]) {
   await fs.promises.writeFile(pkgPath, JSON.stringify(pkg, null, 2));
 
   const envPath = path.join(root, ".env");
+  const apiKeyName = model === "claude-sonnet" ? "ANTHROPIC_API_KEY" 
+    : model === "gpt-4" ? "OPENAI_API_KEY" 
+    : "DEEPSEEK_API_KEY";
+    
   await fs.promises.writeFile(
     envPath,
-    `OPENAI_API_KEY=${openaiApiKey}\nRPC_URL=${finalRpcURL}\nSOLANA_PRIVATE_KEY=${solanaPrivateKey}`,
+    `MODEL=${model}\n${apiKeyName}=${apiKey}\nRPC_URL=${finalRpcURL}\nSOLANA_PRIVATE_KEY=${solanaPrivateKey}`,
   );
 
   spinner.succeed();

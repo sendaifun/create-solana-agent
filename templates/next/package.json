@@ -14,6 +14,7 @@
     "@langchain/core": "^0.3.27",
     "@langchain/deepseek": "^0.0.1",
     "@langchain/langgraph": "^0.2.38",
+    "@langchain/anthropic": "^0.3.13",
     "@langchain/openai": "^0.3.16",
     "@phosphor-icons/react": "^2.1.7",
     "@radix-ui/react-dropdown-menu": "^2.1.4",

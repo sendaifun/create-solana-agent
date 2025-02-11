@@ -1,6 +1,7 @@
 import { MemorySaver } from "@langchain/langgraph";
 import { createReactAgent } from "@langchain/langgraph/prebuilt";
 import { ChatOpenAI } from "@langchain/openai";
+import { ChatAnthropic } from "@langchain/anthropic";
 import { validateEnvironment } from "@/lib/utils";
 import { SolanaAgentKit } from "solana-agent-kit";
 import { createSolanaTools } from "solana-agent-kit";
@@ -9,9 +10,15 @@ import { ChatDeepSeek } from "@langchain/deepseek";
 export async function initializeAgent(modelName: string) {
   const llm = modelName?.includes("OpenAI") 
     ? new ChatOpenAI({
-        modelName: "gpt-4o-mini",
+        modelName: "gpt-4o-turbo",
         temperature: 0.3,
         apiKey: process.env.OPENAI_API_KEY!,
+      })
+    : modelName?.includes("Claude")
+    ? new ChatAnthropic({
+        modelName: "claude-3-sonnet-latest",
+        temperature: 0.3,
+        apiKey: process.env.ANTHROPIC_API_KEY!,
       })
     : new ChatDeepSeek({
         model: "deepseek-chat",
