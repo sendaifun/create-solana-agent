@@ -60,7 +60,9 @@ export function ChatInput({
   }, []);
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSubmit(e, selectedModel);
+    if (input.trim()) {
+      onSubmit(e, selectedModel);
+    }
   };
 
   return (
@@ -68,11 +70,19 @@ export function ChatInput({
       <div className="relative rounded-2xl bg-card/90 backdrop-blur-xl shadow-sm transition-all duration-200">
         <div className="flex flex-col">
           <div className="relative flex items-center min-h-[72px]">
-            <Input
+            <textarea
               value={input}
               onChange={(e) => setInput(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                  e.preventDefault();
+                  if (input.trim()) {
+                    handleSubmit(e as any);
+                  }
+                }
+              }}
               placeholder="Ask anything..."
-              className="w-full h-[72px] px-6 text-base bg-transparent border-0 focus-visible:ring-0 focus-visible:ring-offset-0 text-foreground placeholder:text-muted-foreground"
+              className="w-full h-[72px] px-6 py-4 outline-none text-base bg-transparent border-0 focus-visible:ring-0 focus-visible:ring-offset-0 text-foreground placeholder:text-muted-foreground resize-none"
             />
           </div>
           <div className="flex items-center h-12 px-6 border-t border-border">

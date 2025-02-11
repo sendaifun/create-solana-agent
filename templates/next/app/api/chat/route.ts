@@ -6,8 +6,9 @@ import bs58 from "bs58";
 
 export async function POST(req: NextRequest) {
   try {
-    const { message } = await req.json();
-    const { agent, config } = await getAgent();
+    const { message, modelName } = await req.json();
+    console.log("modelName", modelName);
+    const { agent, config } = await getAgent(modelName);
 
     const messages = [
       new HumanMessage({
@@ -21,8 +22,10 @@ export async function POST(req: NextRequest) {
 
     for await (const chunk of stream) {
       if ("agent" in chunk) {
+        // console.log("chunk.agent", chunk.agent);
         response += chunk.agent.messages[0].content + "\n";
       } else if ("tools" in chunk) {
+        // console.log("chunk.tools", chunk.tools);
         console.log(chunk.tools.messages[0].content);
       }
     }

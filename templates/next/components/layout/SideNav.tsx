@@ -138,14 +138,15 @@ export default function SideNav() {
 								"h-11 bg-accent/10 text-accent hover:bg-accent/20",
 								!isExpanded && !isMobile && "justify-center p-2",
 							)}
-							onClick={() =>
-								addSession(
+							onClick={() => {
+								const newSession = addSession(
 									currentSessionId
 										? (getSessionById(currentSessionId)?.model ??
 												MOCK_MODELS[0])
 										: MOCK_MODELS[0],
-								)
-							}
+								);
+								router.push(`/chat/${newSession.id}`);
+							}}
 						>
 							<Plus size={17} weight="bold" />
 							{(isExpanded || (!isExpanded && isMobile)) && (
@@ -174,7 +175,7 @@ export default function SideNav() {
 									{sessions.length} chats
 								</div>
 							</div>
-							<div className="px-3 space-y-1">
+							<div className="px-3 space-y-1 overflow-y-auto max-h-[calc(100vh-280px)]">
 								{sessions.map((item, index) => (
 									<Button
 										key={index}
@@ -230,7 +231,10 @@ export default function SideNav() {
 
 					{/* Sidebar Footer */}
 					<div
-						className={cn("transition-all duration-300 ease-out p-3 shrink-0")}
+						className={cn(
+							"transition-all z-20 duration-300 ease-out p-3 shrink-0",
+							"bg-gradient-to-t from-muted/50 to-transparent"
+						)}
 					>
 						{!isExpanded && !isMobile && (
 							<Button

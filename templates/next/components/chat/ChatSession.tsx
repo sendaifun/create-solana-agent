@@ -165,7 +165,7 @@ export function ChatSession({ sessionId, initialMessages }: ChatSessionProps) {
       const response = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message }),
+        body: JSON.stringify({ message, modelName: selectedModel?.name }),
       });
 
       if (!response.ok) throw new Error("Failed to get response");
@@ -214,7 +214,7 @@ export function ChatSession({ sessionId, initialMessages }: ChatSessionProps) {
       const response = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: currentInput }), // Use stored input
+        body: JSON.stringify({ message: currentInput, modelName: selectedModel?.name }), // Use stored input
       });
 
       if (!response.ok) throw new Error("Failed to get response");
