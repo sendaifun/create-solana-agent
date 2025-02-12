@@ -30,16 +30,16 @@ Create Solana Agent is a single line command that helps you bootstrap a new AI a
   - GPT-4
   - DeepSeek Chat
 - 🎨 Modern, minimalist UI with dark/light mode
-- ⛓️ Interact with 20+ Solana Protocols via [Solana Agent Kit](https://solanaagentkit.xyz/)
+- ⛓️ Interact with 20+ Solana Protocols via [Solana Agent Kit](https://kit.sendai.fun/)
 - 💬 Real-time chat interface with markdown support
 - 🔄 Session management and chat history
 - 🏗️ Built with:
+  - Solana Agent Kit
   - Next.js 14 (App Router)
   - TypeScript
   - Tailwind CSS
   - Shadcn UI
-  - Solana Agent Kit
-  - Vercel AI SDK
+  - Langchain SDK
 
 ## Quick Start
 
