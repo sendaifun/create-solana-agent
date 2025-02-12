@@ -10,7 +10,7 @@ import { ChatDeepSeek } from "@langchain/deepseek";
 export async function initializeAgent(modelName: string) {
   const llm = modelName?.includes("OpenAI") 
     ? new ChatOpenAI({
-        modelName: "gpt-4o-turbo",
+        modelName: "gpt-4o-mini",
         temperature: 0.3,
         apiKey: process.env.OPENAI_API_KEY!,
       })
