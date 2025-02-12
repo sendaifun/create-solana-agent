@@ -30,7 +30,7 @@ export const UserProfile = ({ isExpanded }: UserProfileProps) => {
       {(isExpanded || (!isExpanded && window.innerWidth < 768)) && (
         <>
           <div className="flex-1 min-w-0">
-            <div className="text-[15px] font-medium text-foreground truncate">SEND AGENT</div>
+            <div className="text-[15px] font-medium text-foreground truncate">DEFAI AGENT</div>
             <div className="text-[13px] text-muted-foreground">Pro</div>
           </div>
           <Button variant="ghostNoBackground" size="icon" onClick={toggleTheme} className="hover:bg-muted/50">

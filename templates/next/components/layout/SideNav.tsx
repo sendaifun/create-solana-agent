@@ -115,7 +115,7 @@ export default function SideNav() {
 											"group-hover:text-accent",
 										)}
 									>
-										DeFAI
+										SendAI
 									</h1>
 								)}
 							</div>
