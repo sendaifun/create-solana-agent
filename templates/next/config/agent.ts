@@ -16,7 +16,7 @@ export async function initializeAgent(modelName: string) {
       })
     : modelName?.includes("Claude")
     ? new ChatAnthropic({
-        modelName: "claude-3-sonnet-latest",
+        modelName: "claude-3-5-sonnet-latest",
         temperature: 0.3,
         apiKey: process.env.ANTHROPIC_API_KEY!,
       })
