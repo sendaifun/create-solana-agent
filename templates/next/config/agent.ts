@@ -5,9 +5,11 @@ import { ChatAnthropic } from "@langchain/anthropic";
 import { validateEnvironment } from "@/lib/utils";
 import { SolanaAgentKit } from "solana-agent-kit";
 import { createSolanaTools } from "solana-agent-kit";
+import { SonicAgentKit } from "@sendaifun/sonic-agent-kit";
+import { createSonicTools } from "@sendaifun/sonic-agent-kit";
 import { ChatDeepSeek } from "@langchain/deepseek";
 
-export async function initializeAgent(modelName: string) {
+export async function initializeAgent(modelName: string, chainType: "solana" | "sonic") {
   const llm = modelName?.includes("OpenAI") 
     ? new ChatOpenAI({
         modelName: "gpt-4o-mini",
@@ -33,14 +35,18 @@ export async function initializeAgent(modelName: string) {
   const solanaAgent = new SolanaAgentKit(process.env.SOLANA_PRIVATE_KEY!, process.env.RPC_URL!, {
     OPENAI_API_KEY: process.env.OPENAI_API_KEY!,
   });
+  const solanaTools = createSolanaTools(solanaAgent);
 
-  const tools = createSolanaTools(solanaAgent);
+  const sonicAgent = new SonicAgentKit(process.env.SONIC_PRIVATE_KEY!, process.env.SONIC_RPC_URL!, {
+    OPENAI_API_KEY: process.env.OPENAI_API_KEY!,
+  });
+  const sonicTools = createSonicTools(sonicAgent);
   const memory = new MemorySaver();
   const config = { configurable: { thread_id: "1" } };
 
   const agent = createReactAgent({
     llm,
-    tools,
+    tools: chainType === "solana" ? solanaTools : sonicTools,
     checkpointSaver: memory,
     messageModifier: `
         You are a helpful agent that can interact onchain using the Solana Agent Kit. You are

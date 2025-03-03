@@ -21,10 +21,21 @@ export const MOCK_MODELS = [
   }
 ];
 
+export const CHAIN_TYPES = [
+  {
+    name: "Solana",
+    subTxt: "Solana Mainnet",
+  },
+  {
+    name: "Sonic",
+    subTxt: "Mobius - Sonic SVM Mainnet",
+  }
+];
+
 type Item = {
   name: string;
   subTxt: string;
-};
+}
 
 interface ChatInputProps {
   input: string;
@@ -36,6 +47,8 @@ interface ChatInputProps {
   setSelectedModel: (model: Item) => void;
   selectedWallet: Item;
   setSelectedWallet: (wallet: Item) => void;
+  selectedChainType: Item;
+  setSelectedChainType: (chainType: Item) => void;
 }
 
 export function ChatInput({
@@ -48,6 +61,8 @@ export function ChatInput({
   setSelectedModel,
   selectedWallet,
   setSelectedWallet,
+  selectedChainType,
+  setSelectedChainType,
 }: ChatInputProps) {
   const [isEnabled, setIsEnabled] = React.useState(false);
   const [wallets, setWallets] = useState([{
@@ -96,9 +111,11 @@ export function ChatInput({
 
                 {/* You can use the ModeSelector component if you want to use the default mode selector UI */}
                 {/* <ModeSelector selectedMode={selectedMode} onModeChange={setSelectedMode} /> */}
-                <div className="mx-4 h-4 w-[1px] bg-border shrink-0" />
-                <DropdownComp selectedItems={selectedWallet} onItemsChange={setSelectedWallet} items={wallets} />
+                {/* <div className="mx-4 h-4 w-[1px] bg-border shrink-0" />
+                <DropdownComp selectedItems={selectedWallet} onItemsChange={setSelectedWallet} items={wallets} /> */}
               </div>
+              <div className="mx-4 h-4 w-[1px] bg-border shrink-0" />
+              <DropdownComp selectedItems={selectedChainType} onItemsChange={setSelectedChainType} items={CHAIN_TYPES} />
             </div>
             <div className="ml-auto flex items-center">
               

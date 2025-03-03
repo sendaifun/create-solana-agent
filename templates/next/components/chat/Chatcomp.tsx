@@ -9,7 +9,7 @@ import {
 	ArrowsLeftRight,
 } from "@phosphor-icons/react";
 import { AGENT_MODES } from "./ModeSelector";
-import { MOCK_MODELS } from "./ChatInput";
+import { CHAIN_TYPES, MOCK_MODELS } from "./ChatInput";
 import { IntegrationCard } from "./IntegrationCard";
 import { ChatInput } from "./ChatInput";
 import {
@@ -216,6 +216,7 @@ export function Chatcomp({ sessionId }: ChatcompProps) {
 	}]);
 	const [selectedWallet, setSelectedWallet] = useState(wallets[0]);
 	const [selectedModel, setSelectedModel] = useState(MOCK_MODELS[0]);
+	const [selectedChainType, setSelectedChainType] = useState(CHAIN_TYPES[0]);
 	const [activeIntegrationCategory, setActiveIntegrationCategory] =
 		useState<CategoryId>("all");
 	const inputSectionRef = useRef<HTMLDivElement>(null);
@@ -291,6 +292,8 @@ export function Chatcomp({ sessionId }: ChatcompProps) {
 								setSelectedWallet={setSelectedWallet}
 								selectedModel={selectedModel}
 								setSelectedModel={setSelectedModel}
+								selectedChainType={selectedChainType}
+								setSelectedChainType={setSelectedChainType}
 							/>
 						</div>
 						<div className="flex flex-row flex-wrap gap-2 items-center justify-center">

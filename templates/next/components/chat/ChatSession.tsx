@@ -4,7 +4,7 @@ import { AgentLogo } from "@/components/layout/AgentLogo";
 import { useChatStore } from '@/store/useChatStore';
 import { useEffect, useRef, useState } from "react";
 import ReactMarkdown from 'react-markdown';
-import { ChatInput, MOCK_MODELS } from "./ChatInput";
+import { ChatInput, MOCK_MODELS, CHAIN_TYPES } from "./ChatInput";
 import { AGENT_MODES } from "./ModeSelector";
 
 interface Message {
@@ -128,7 +128,7 @@ export function ChatSession({ sessionId, initialMessages }: ChatSessionProps) {
   }]);
   const [selectedWallet, setSelectedWallet] = useState(wallets[0]);
   const [selectedModel, setSelectedModel] = useState(MOCK_MODELS[0]);
-
+  const [selectedChainType, setSelectedChainType] = useState(CHAIN_TYPES[0]);
   const chatStoreInitialMessage = useChatStore((state: any) => state.initialMessage);
 
   const scrollToBottom = () => {
@@ -165,7 +165,7 @@ export function ChatSession({ sessionId, initialMessages }: ChatSessionProps) {
       const response = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message, modelName: selectedModel?.name }),
+        body: JSON.stringify({ message, modelName: selectedModel?.name, chainType: selectedChainType?.name }),
       });
 
       if (!response.ok) throw new Error("Failed to get response");
@@ -214,7 +214,7 @@ export function ChatSession({ sessionId, initialMessages }: ChatSessionProps) {
       const response = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: currentInput, modelName: selectedModel?.name }), // Use stored input
+        body: JSON.stringify({ message: currentInput, modelName: selectedModel?.name, chainType: selectedChainType?.name }), // Use stored input
       });
 
       if (!response.ok) throw new Error("Failed to get response");
@@ -282,6 +282,8 @@ export function ChatSession({ sessionId, initialMessages }: ChatSessionProps) {
             setSelectedWallet={setSelectedWallet}
             selectedModel={selectedModel}
             setSelectedModel={setSelectedModel}
+            selectedChainType={selectedChainType}
+            setSelectedChainType={setSelectedChainType}
           />
         </div>
       </div>

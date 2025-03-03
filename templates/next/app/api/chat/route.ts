@@ -6,9 +6,9 @@ import bs58 from "bs58";
 
 export async function POST(req: NextRequest) {
   try {
-    const { message, modelName } = await req.json();
+    const { message, modelName, chainType } = await req.json();
     console.log("modelName", modelName);
-    const { agent, config } = await getAgent(modelName);
+    const { agent, config } = await getAgent(modelName, chainType as "solana" | "sonic");
 
     const messages = [
       new HumanMessage({

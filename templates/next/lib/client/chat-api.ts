@@ -1,13 +1,13 @@
 "use client";
 
-export async function sendChatMessage(message: string, modelName: string) {
+export async function sendChatMessage(message: string, modelName: string, chainType: "solana" | "sonic") {
   try {
     const response = await fetch("/api/chat", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ message, modelName }),
+      body: JSON.stringify({ message, modelName, chainType }),
     });
 
     if (!response.ok) {
