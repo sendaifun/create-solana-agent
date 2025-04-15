@@ -17,7 +17,7 @@ import type { UseChatHelpers } from "@ai-sdk/react";
 import { usePrivy, useSolanaWallets } from "@privy-io/react-auth";
 import { SolanaAgentKit, createVercelAITools } from "solana-agent-kit";
 import TokenPlugin from "@solana-agent-kit/plugin-token";
-import MiscPlugin from "@solana-agent-kit/plugin-misc";
+// import MiscPlugin from "@solana-agent-kit/plugin-misc";
 import { Connection, PublicKey } from "@solana/web3.js";
 import { generateUUID } from "~/lib/utils";
 import { fetchChat, saveChatFn, saveMessagesFn } from "~/functions/chats";
@@ -116,7 +116,8 @@ export function useChat({ id, initialMessages = [] }: UseChatOptions) {
 
         import.meta.env.VITE_RPC_URL as string,
         {},
-      ).use(TokenPlugin).use(MiscPlugin);
+      ).use(TokenPlugin)
+      // .use(MiscPlugin);
 
       const tools = createVercelAITools(agent, agent.actions);
       return tools;
