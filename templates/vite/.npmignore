@@ -1,0 +1,8 @@
+.env
+.env.local
+.env.example
+node_modules
+.next
+
+package-lock.json
+pnpm-lock.yaml

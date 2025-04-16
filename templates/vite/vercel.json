@@ -1,0 +1,23 @@
+{
+  "version": 2,
+  "buildCommand": "pnpm vercel-build",
+  "installCommand": "npm install -g pnpm@9.15.3 && pnpm install",
+  "builds": [
+    {
+      "src": "./.output/server/index.mjs",
+      "use": "@vercel/node",
+      "config": {
+        "includeFiles": [
+          ".output/server/**"
+        ]
+      }
+    }
+  ],
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/.output/server/index.mjs"
+    }
+  ],
+  "devCommand": "pnpm dev"
+} 
